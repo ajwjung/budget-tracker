@@ -1,26 +1,12 @@
-import { Link, Outlet } from "react-router-dom";
+import Header from "./components/Header";
+import Dashboard from "./components/Dashboard";
 
 function App() {
   return (
     <>
-      <header>
-        <nav className="navbar d-flex justify-content-evenly">
-          <Link to="dashboard" className="nav-item">
-            Dashboard
-          </Link>
-          <Link to="spendings" className="nav-item">
-            Input Spendings
-          </Link>
-          <Link to="reports" className="nav-item">
-            Reports
-          </Link>
-          <Link to="wishlist" className="nav-item">
-            Wishlist
-          </Link>
-        </nav>
-      </header>
+      <Header />
       <h1>Welcome, User</h1>
-      <Outlet />
+      <Dashboard />
     </>
   );
 }
