@@ -1,11 +1,10 @@
 import PropTypes from "prop-types";
+import { useContext } from "react";
+import { WishlistContext } from "../App";
 
-function BudgetTable({
-  categories,
-  startingBalance,
-  calculateTotal,
-  calculateSelectedTotal,
-}) {
+function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
+  const { categories, startingBalance } = useContext(WishlistContext);
+
   function formatRemainingBalance() {
     /*
       The function reformats the remaining balance, if negative,
@@ -15,7 +14,7 @@ function BudgetTable({
     const remainingBalance = calculateTotal("budget").toFixed(2);
 
     return remainingBalance < 0
-      ? `-$${remainingBalance.slice(2)}`
+      ? `-$${remainingBalance.slice(1)}`
       : `$${remainingBalance}`;
   }
 
@@ -98,8 +97,6 @@ function BudgetTable({
 }
 
 BudgetTable.propTypes = {
-  categories: PropTypes.arrayOf(PropTypes.object),
-  startingBalance: PropTypes.number,
   calculateTotal: PropTypes.func,
   calculateSelectedTotal: PropTypes.func,
 };

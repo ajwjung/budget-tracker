@@ -1,11 +1,11 @@
 import PropTypes from "prop-types";
+import { useContext } from "react";
+import { WishlistContext } from "../App";
 
-function WishlistTable({
-  wishlistItems,
-  handleSelectItem,
-  calculateTotal,
-  calculateSelectedTotal,
-}) {
+function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
+  const { wishlistItems, idsOfSelectedItems, handleSelectItem } =
+    useContext(WishlistContext);
+
   const placeholderRow = (
     <tr>
       <td>
@@ -48,15 +48,29 @@ function WishlistTable({
               return (
                 <tr key={`wl${item.id}`}>
                   <td>
-                    <input
-                      onClick={(e) => {
-                        handleSelectItem(e, item.id);
-                      }}
-                      type="checkbox"
-                      name="selectedItem"
-                      id="selected-item"
-                      className="form-check-input"
-                    />
+                    {idsOfSelectedItems.includes(item.id) ? (
+                      <input
+                        checked={true}
+                        onChange={(e) => {
+                          handleSelectItem(e, item.id);
+                        }}
+                        type="checkbox"
+                        name="selectedItem"
+                        id="selected-item"
+                        className="form-check-input"
+                      />
+                    ) : (
+                      <input
+                        checked={false}
+                        onChange={(e) => {
+                          handleSelectItem(e, item.id);
+                        }}
+                        type="checkbox"
+                        name="selectedItem"
+                        id="selected-item"
+                        className="form-check-input"
+                      />
+                    )}
                   </td>
                   <td>{item.item}</td>
                   <td>{`$${item.price}`}</td>
@@ -94,9 +108,8 @@ function WishlistTable({
 }
 
 WishlistTable.propTypes = {
-  wishlistItems: PropTypes.array,
   calculateTotal: PropTypes.func,
-  handleSelectItem: PropTypes.func,
+  calculateSelectedTotal: PropTypes.func,
 };
 
 export default WishlistTable;

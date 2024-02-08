@@ -1,6 +1,11 @@
 import PropTypes from "prop-types";
+import { useContext } from "react";
+import { WishlistContext } from "../App";
 
-function WishlistForm({ headerText, handleAddNewItem, handleAddNewCategory }) {
+function WishlistForm({ headerText }) {
+  const { handleAddNewItem, handleAddNewCategory } =
+    useContext(WishlistContext);
+
   let formDetails = {};
 
   if (headerText === "wishlist item") {
@@ -73,8 +78,6 @@ function WishlistForm({ headerText, handleAddNewItem, handleAddNewCategory }) {
 
 WishlistForm.propTypes = {
   headerText: PropTypes.string,
-  handleAddNewItem: PropTypes.func,
-  handleAddNewCategory: PropTypes.func,
 };
 
 export default WishlistForm;

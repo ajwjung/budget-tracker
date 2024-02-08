@@ -1,6 +1,9 @@
-import PropTypes from "prop-types";
+import { useContext } from "react";
+import { WishlistContext } from "../App";
 
-function BudgetBalanceForm({ handleUpdateStartBalance }) {
+function BudgetBalanceForm() {
+  const { handleUpdateStartBalance } = useContext(WishlistContext);
+
   return (
     <form
       onSubmit={(e) => {
@@ -31,9 +34,5 @@ function BudgetBalanceForm({ handleUpdateStartBalance }) {
     </form>
   );
 }
-
-BudgetBalanceForm.propTypes = {
-  handleUpdateStartBalance: PropTypes.func,
-};
 
 export default BudgetBalanceForm;

@@ -6,6 +6,7 @@ import {
   Legend,
   Tooltip,
 } from "chart.js";
+import Header from "./Header";
 
 ChartJS.register(DoughnutController, ArcElement, Legend, Tooltip);
 
@@ -71,40 +72,44 @@ function Dashboard() {
   ];
 
   return (
-    <main>
-      <h2 className="text-center">User's Dashboard</h2>
-      <div className="container-sm my-5">
-        <div className="row gx-5">
-          <div className="col-7">
-            <Doughnut
-              data={data}
-              options={options}
-              plugins={plugins}
-            ></Doughnut>
+    <>
+      <Header />
+      <h1>Welcome, User!</h1>
+      <main>
+        <h2 className="text-center">User's Dashboard</h2>
+        <div className="container-sm my-5">
+          <div className="row gx-5">
+            <div className="col-7">
+              <Doughnut
+                data={data}
+                options={options}
+                plugins={plugins}
+              ></Doughnut>
+            </div>
+            <div className="col">
+              <div className="card">
+                <div className="card-body">
+                  <h3>Overview</h3>
+                  <hr />
+                  <ul>
+                    <li>Spent:</li>
+                    <li>Balance:</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="col">
+          <div className="row my-5">
             <div className="card">
               <div className="card-body">
-                <h3>Overview</h3>
+                <h3>Recent Transactions</h3>
                 <hr />
-                <ul>
-                  <li>Spent:</li>
-                  <li>Balance:</li>
-                </ul>
               </div>
             </div>
           </div>
         </div>
-        <div className="row my-5">
-          <div className="card">
-            <div className="card-body">
-              <h3>Recent Transactions</h3>
-              <hr />
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }
 
