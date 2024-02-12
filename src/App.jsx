@@ -48,17 +48,13 @@ function App() {
   const [startingBalance, setStartingBalance] = useState(0);
   const [idsOfSelectedItems, setIdsOfSelectedItems] = useState([]);
 
-  function handleAddNewItem() {
+  function handleAddNewItem(itemInfo) {
     /*
-      The function gets data from the submitted Wishlist form
+      The function takes an object for a new item and price
       and updates the state array holding all wishlisted items
       by either updating the original placeholder object or by
       adding a new object to the array.
     */
-
-    const form = document.getElementById("wishlist-form");
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData);
 
     // Update first object with real values if it's the empty placeholder object
     if (!wishlistItems[0].item && !wishlistItems[0].price) {
@@ -66,8 +62,8 @@ function App() {
         if (item.id === 0 && !item.item && !item.price) {
           return {
             id: item.id,
-            item: data.itemName,
-            price: parseFloat(data.price),
+            item: itemInfo.item,
+            price: parseFloat(itemInfo.price),
           };
         } else {
           return item;
@@ -81,24 +77,20 @@ function App() {
         ...wishlistItems,
         {
           id: wishlistItems.length,
-          item: data.itemName,
-          price: parseFloat(data.price),
+          item: itemInfo.item,
+          price: parseFloat(itemInfo.price),
         },
       ]);
     }
   }
 
-  function handleAddNewCategory() {
+  function handleAddNewCategory(categoryInfo) {
     /*
-      The function gets data from the submitted Budget Category form
+      The function takes an object for a new category and balance
       and updates the state array holding all categories items
       by either updating the original placeholder object or by
       adding a new object to the array.
     */
-
-    const form = document.getElementById("budget-form");
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData);
 
     // Update first object with real values if it's the empty placeholder object
     if (!categories[0].category && !categories[0].balance) {
@@ -106,8 +98,8 @@ function App() {
         if (category.id === 0 && !category.category && !category.balance) {
           return {
             id: category.id,
-            category: data.category,
-            balance: parseFloat(data.budgetAmount),
+            category: categoryInfo.category,
+            balance: parseFloat(categoryInfo.balance),
           };
         } else {
           return category;
@@ -121,24 +113,19 @@ function App() {
         ...categories,
         {
           id: categories.length,
-          category: data.category,
-          balance: parseFloat(data.budgetAmount),
+          category: categoryInfo.category,
+          balance: parseFloat(categoryInfo.balance),
         },
       ]);
     }
   }
 
-  function handleUpdateStartBalance() {
+  function handleUpdateStartBalance(inputBalance) {
     /*
-      The function gets data from the submitted Budget Starting Balance form
-      and updates the state storing the starting budget.
+      The function takes an input value and updates the state 
+      storing the starting budget (float value).
     */
-
-    const form = document.getElementById("budget-balance-form");
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData);
-
-    setStartingBalance(parseFloat(data.currentBalance));
+    setStartingBalance(parseFloat(inputBalance));
   }
 
   function handleSelectItem(e, targetId) {

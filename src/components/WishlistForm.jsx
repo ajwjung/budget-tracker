@@ -1,8 +1,17 @@
 import PropTypes from "prop-types";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { WishlistContext } from "../App";
 
 function WishlistForm({ headerText }) {
+  const [itemInfo, setItemInfo] = useState({
+    item: "",
+    price: "",
+  });
+  const [categoryInfo, setCategoryInfo] = useState({
+    category: "",
+    balance: "",
+  });
+
   const { handleAddNewItem, handleAddNewCategory } =
     useContext(WishlistContext);
 
@@ -28,10 +37,42 @@ function WishlistForm({ headerText }) {
     formDetails["priceInputId"] = "budget-amount";
   }
 
+  function handleItemNameChange(e) {
+    setItemInfo({
+      ...itemInfo,
+      item: e.target.value,
+    });
+  }
+
+  function handleItemPriceChange(e) {
+    setItemInfo({
+      ...itemInfo,
+      price: parseFloat(e.target.value),
+    });
+  }
+
+  function handleCategoryChange(e) {
+    setCategoryInfo({
+      ...categoryInfo,
+      category: e.target.value,
+    });
+  }
+
+  function handleBalanceChange(e) {
+    setCategoryInfo({
+      ...categoryInfo,
+      balance: parseFloat(e.target.value),
+    });
+  }
+
   function handleOnSubmit() {
     headerText === "wishlist item"
-      ? handleAddNewItem()
-      : handleAddNewCategory();
+      ? handleAddNewItem(itemInfo)
+      : handleAddNewCategory(categoryInfo);
+    setItemInfo({
+      item: "",
+      price: "",
+    });
   }
 
   return (
@@ -39,7 +80,6 @@ function WishlistForm({ headerText }) {
       onSubmit={(e) => {
         e.preventDefault();
         handleOnSubmit();
-        e.target.reset();
       }}
       className="my-2"
       id={formDetails.formId}
@@ -54,6 +94,16 @@ function WishlistForm({ headerText }) {
           name={formDetails.itemInputName}
           id={formDetails.itemInputId}
           className="form-control"
+          value={
+            headerText === "wishlist item"
+              ? itemInfo.item
+              : categoryInfo.category
+          }
+          onChange={(e) => {
+            headerText === "wishlist item"
+              ? handleItemNameChange(e)
+              : handleCategoryChange(e);
+          }}
           required={true}
         />
         <label htmlFor={formDetails.priceLabelFor} className="input-group-text">
@@ -66,6 +116,16 @@ function WishlistForm({ headerText }) {
           name={formDetails.priceInputName}
           id={formDetails.priceInputId}
           className="form-control"
+          value={
+            headerText === "wishlist item"
+              ? itemInfo.price
+              : categoryInfo.balance
+          }
+          onChange={(e) => {
+            headerText === "wishlist item"
+              ? handleItemPriceChange(e)
+              : handleBalanceChange(e);
+          }}
           required={true}
         />
         <button type="submit" className="btn btn-outline-primary">

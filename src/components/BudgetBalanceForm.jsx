@@ -1,15 +1,20 @@
-import { useContext } from "react";
+import { useState, useContext } from "react";
 import { WishlistContext } from "../App";
 
 function BudgetBalanceForm() {
   const { handleUpdateStartBalance } = useContext(WishlistContext);
+  const [startBalance, setStartBalance] = useState("");
+
+  function handleStartBalanceChange(e) {
+    setStartBalance(e.target.value);
+  }
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        handleUpdateStartBalance();
-        e.target.reset();
+        handleUpdateStartBalance(startBalance);
+        setStartBalance("");
       }}
       id="budget-balance-form"
     >
@@ -25,6 +30,10 @@ function BudgetBalanceForm() {
           name="currentBalance"
           id="current-balance"
           className="form-control"
+          value={startBalance}
+          onChange={(e) => {
+            handleStartBalanceChange(e);
+          }}
           required={true}
         />
         <button type="submit" className="btn btn-outline-primary">
