@@ -3,6 +3,9 @@ import { useContext, useState } from "react";
 import { WishlistContext } from "../App";
 
 function WishlistForm({ headerText }) {
+  const { handleAddNewItem, handleAddNewCategory } =
+    useContext(WishlistContext);
+
   const [itemInfo, setItemInfo] = useState({
     item: "",
     price: "",
@@ -11,10 +14,6 @@ function WishlistForm({ headerText }) {
     category: "",
     balance: "",
   });
-
-  const { handleAddNewItem, handleAddNewCategory } =
-    useContext(WishlistContext);
-
   let formDetails = {};
 
   if (headerText === "wishlist item") {

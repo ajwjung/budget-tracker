@@ -1,13 +1,113 @@
 import PropTypes from "prop-types";
-import { useContext } from "react";
+import { useState, useContext } from "react";
 import { WishlistContext } from "../App";
 
 function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
-  const { wishlistItems, idsOfSelectedItems, handleSelectItem } =
-    useContext(WishlistContext);
+  const {
+    wishlistItems,
+    idsOfSelectedItems,
+    handleSelectItem,
+    handleSaveEditedItem,
+  } = useContext(WishlistContext);
+  const [isEdit, setIsEdit] = useState(false);
+  const [itemInput, setItemInput] = useState({
+    item: "",
+    price: "",
+  });
+
+  function handleInputChange(field, value) {
+    if (field === "item") {
+      setItemInput({
+        ...itemInput,
+        item: value,
+      });
+    } else if (field === "price") {
+      setItemInput({
+        ...itemInput,
+        price: parseFloat(value),
+      });
+    }
+  }
+
+  function getInputValues(e) {
+    /*
+      The function takes the target button node and uses its parent
+      "tr" node to get the item name and item price cells' values.
+      This alternative is used because states are asynchronous
+      and we cannot use the updated object immediately.
+    */
+
+    const itemNameCell = e.target.closest("tr").children.item(1);
+    const itemPriceCell = itemNameCell.nextElementSibling;
+
+    const itemName = itemNameCell.textContent;
+    const priceValue = parseFloat(itemPriceCell.textContent.split("$")[1]);
+
+    return { itemName, priceValue };
+  }
+
+  function handleEditRow(e, targetEntryId) {
+    /*
+      The function takes the target button node and uses its parent
+      "tr" node to:
+        1) Replace the "Item" and "Price" cells with input fields on edit, or
+        2) Replace the "Item" and "Price" inputs with updated text on save
+           
+      The cells' original values are fed back into the input fields
+      for quick editing.
+    */
+
+    if (!isEdit) {
+      // In edit mode => change text to inputs
+      const itemNameCell = e.target.closest("tr").children.item(1);
+      const itemName = itemNameCell.textContent;
+      const itemPriceCell = itemNameCell.nextElementSibling;
+      const priceValue = parseFloat(itemPriceCell.textContent.split("$")[1]);
+
+      const itemNameInput = document.createElement("input");
+      itemNameInput.setAttribute("type", "textbox");
+      itemNameInput.classList.add("form-control");
+      itemNameInput.value = itemName;
+      itemNameInput.addEventListener("change", (e) => {
+        handleInputChange("item", e.target.value);
+      });
+
+      const itemPriceInput = document.createElement("input");
+      itemPriceInput.setAttribute("type", "number");
+      itemPriceInput.classList.add("form-control");
+      itemPriceInput.setAttribute("step", "0.01");
+      itemPriceInput.setAttribute("min", "0.01");
+      itemPriceInput.value = priceValue;
+      itemPriceInput.addEventListener("change", (e) => {
+        handleInputChange("price", e.target.value);
+      });
+
+      itemNameCell.innerHTML = "";
+      itemNameCell.appendChild(itemNameInput);
+
+      itemPriceCell.innerHTML = "";
+      itemPriceCell.appendChild(itemPriceInput);
+    } else {
+      // In save mode => change inputs to text
+      const itemNameCell = e.target.closest("tr").children.item(1);
+      const itemNameValue = itemNameCell.firstChild.value;
+      const itemPriceCell = itemNameCell.nextElementSibling;
+      const priceValue = itemPriceCell.firstChild.value;
+
+      itemNameCell.removeChild(itemNameCell.firstChild);
+      itemNameCell.textContent = itemNameValue;
+
+      itemPriceCell.removeChild(itemPriceCell.firstChild);
+      itemPriceCell.textContent = `$${priceValue}`;
+
+      handleSaveEditedItem(targetEntryId, getInputValues(e));
+    }
+
+    setIsEdit(!isEdit);
+  }
 
   const placeholderRow = (
-    <tr>
+    <tr className="item0">
       <td>
         <input
           onClick={(e) => {
@@ -22,8 +122,14 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
       <td>Sample Item</td>
       <td>$0</td>
       <td>
-        <button type="button" className="btn btn-warning">
-          Edit
+        <button
+          onClick={(e) => {
+            handleEditRow(e);
+          }}
+          type="button"
+          className="btn btn-warning"
+        >
+          {!isEdit ? "Edit" : "Save"}
         </button>
         <button type="button" className="btn btn-danger">
           Delete
@@ -46,7 +152,7 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
         {wishlistItems[0].item
           ? wishlistItems.map((item) => {
               return (
-                <tr key={`wl${item.id}`}>
+                <tr key={`wl${item.id}`} className={`item${item.id}`}>
                   <td>
                     {idsOfSelectedItems.includes(item.id) ? (
                       <input
@@ -75,7 +181,15 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
                   <td>{item.item}</td>
                   <td>{`$${item.price}`}</td>
                   <td>
-                    <button type="button" className="btn btn-warning">
+                    <button
+                      onClick={(e) => {
+                        const targetClass = e.target.closest("tr").className;
+                        const targetEntryId = targetClass.split("item")[1];
+                        handleEditRow(e, targetEntryId);
+                      }}
+                      type="button"
+                      className="btn btn-warning"
+                    >
                       Edit
                     </button>
                     <button type="button" className="btn btn-danger">

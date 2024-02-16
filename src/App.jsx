@@ -13,6 +13,7 @@ export const WishlistContext = createContext({
   handleAddNewCategory: () => {},
   handleUpdateStartBalance: () => {},
   handleSelectItem: () => {},
+  handleSaveEditedItem: () => {},
 });
 
 const router = createBrowserRouter([
@@ -71,6 +72,7 @@ function App() {
       });
 
       setWishlistItems(updatedItems);
+      console.log(wishlistItems);
     } else {
       // Otherwise, add a new object
       setWishlistItems([
@@ -81,6 +83,7 @@ function App() {
           price: parseFloat(itemInfo.price),
         },
       ]);
+      console.log(wishlistItems);
     }
   }
 
@@ -145,6 +148,23 @@ function App() {
     }
   }
 
+  function handleSaveEditedItem(targetEntryId, inputValues) {
+    const updatedItems = wishlistItems.map((item) => {
+      if (item.id === parseInt(targetEntryId)) {
+        return {
+          ...item,
+          item: inputValues.itemName,
+          price: parseFloat(inputValues.priceValue),
+        };
+      } else {
+        return item;
+      }
+    });
+
+    setWishlistItems([...updatedItems]);
+    console.log(wishlistItems);
+  }
+
   return (
     <WishlistContext.Provider
       value={{
@@ -156,6 +176,7 @@ function App() {
         handleAddNewCategory,
         handleUpdateStartBalance,
         handleSelectItem,
+        handleSaveEditedItem,
       }}
     >
       <RouterProvider router={router} />
