@@ -16,9 +16,11 @@ function Wishlist() {
       and returns that value rounded to two decimal places.
     */
 
-    const selectedItemPrices = idsOfSelectedItems.map(
-      (id) => wishlistItems[id].price
-    );
+    const selectedItemPrices = wishlistItems
+      .filter((item) => {
+        return idsOfSelectedItems.includes(item.id);
+      })
+      .map((item) => item.price);
 
     return selectedItemPrices
       .reduce((total, currentPrice) => total + currentPrice, 0)
@@ -37,7 +39,7 @@ function Wishlist() {
     if (calculateFor === "wishlist") {
       const prices = wishlistItems.map((item) => item.price);
       total = prices
-        .reduce((total, currentPrice) => total + currentPrice)
+        .reduce((total, currentPrice) => total + currentPrice, 0)
         .toFixed(2);
     } else if (calculateFor === "budget") {
       const selectedTotal = calculateSelectedTotal();

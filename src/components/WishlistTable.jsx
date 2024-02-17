@@ -8,6 +8,7 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
     idsOfSelectedItems,
     handleSelectItem,
     handleSaveEditedItem,
+    handleDeleteItem,
   } = useContext(WishlistContext);
   const [isEdit, setIsEdit] = useState(false);
   const [itemInput, setItemInput] = useState({
@@ -106,38 +107,6 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
     setIsEdit(!isEdit);
   }
 
-  const placeholderRow = (
-    <tr className="item0">
-      <td>
-        <input
-          onClick={(e) => {
-            handleSelectItem(e, 0);
-          }}
-          type="checkbox"
-          name="selectedItem"
-          id="selected-item"
-          className="form-check-input"
-        />
-      </td>
-      <td>Sample Item</td>
-      <td>$0</td>
-      <td>
-        <button
-          onClick={(e) => {
-            handleEditRow(e);
-          }}
-          type="button"
-          className="btn btn-warning"
-        >
-          {!isEdit ? "Edit" : "Save"}
-        </button>
-        <button type="button" className="btn btn-danger">
-          Delete
-        </button>
-      </td>
-    </tr>
-  );
-
   return (
     <table className="table table-striped">
       <thead>
@@ -149,57 +118,65 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
         </tr>
       </thead>
       <tbody>
-        {wishlistItems[0].item
-          ? wishlistItems.map((item) => {
-              return (
-                <tr key={`wl${item.id}`} className={`item${item.id}`}>
-                  <td>
-                    {idsOfSelectedItems.includes(item.id) ? (
-                      <input
-                        checked={true}
-                        onChange={(e) => {
-                          handleSelectItem(e, item.id);
-                        }}
-                        type="checkbox"
-                        name="selectedItem"
-                        id="selected-item"
-                        className="form-check-input"
-                      />
-                    ) : (
-                      <input
-                        checked={false}
-                        onChange={(e) => {
-                          handleSelectItem(e, item.id);
-                        }}
-                        type="checkbox"
-                        name="selectedItem"
-                        id="selected-item"
-                        className="form-check-input"
-                      />
-                    )}
-                  </td>
-                  <td>{item.item}</td>
-                  <td>{`$${item.price}`}</td>
-                  <td>
-                    <button
-                      onClick={(e) => {
-                        const targetClass = e.target.closest("tr").className;
-                        const targetEntryId = targetClass.split("item")[1];
-                        handleEditRow(e, targetEntryId);
-                      }}
-                      type="button"
-                      className="btn btn-warning"
-                    >
-                      Edit
-                    </button>
-                    <button type="button" className="btn btn-danger">
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              );
-            })
-          : placeholderRow}
+        {wishlistItems.map((item) => {
+          return (
+            <tr key={`wl${item.id}`} className={`item${item.id}`}>
+              <td>
+                {idsOfSelectedItems.includes(item.id) ? (
+                  <input
+                    checked={true}
+                    onChange={(e) => {
+                      handleSelectItem(e.target, item.id);
+                    }}
+                    type="checkbox"
+                    name="selectedItem"
+                    id="selected-item"
+                    className="form-check-input"
+                  />
+                ) : (
+                  <input
+                    checked={false}
+                    onChange={(e) => {
+                      handleSelectItem(e.target, item.id);
+                    }}
+                    type="checkbox"
+                    name="selectedItem"
+                    id="selected-item"
+                    className="form-check-input"
+                  />
+                )}
+              </td>
+              <td>{item.item}</td>
+              <td>{`$${item.price}`}</td>
+              <td>
+                <button
+                  onClick={(e) => {
+                    const targetClass = e.target.closest("tr").className;
+                    const targetEntryId = targetClass.split("item")[1];
+                    handleEditRow(e, targetEntryId);
+                  }}
+                  type="button"
+                  className="btn btn-warning"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={(e) => {
+                    const targetClass = e.target.closest("tr").className;
+                    const targetEntryId = parseInt(
+                      targetClass.split("item")[1]
+                    );
+                    handleDeleteItem(targetEntryId);
+                  }}
+                  type="button"
+                  className="btn btn-danger"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
       <tfoot>
         <tr>

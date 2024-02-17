@@ -14,6 +14,7 @@ export const WishlistContext = createContext({
   handleUpdateStartBalance: () => {},
   handleSelectItem: () => {},
   handleSaveEditedItem: () => {},
+  handleDeleteItem: () => {},
 });
 
 const router = createBrowserRouter([
@@ -35,8 +36,8 @@ function App() {
   const [wishlistItems, setWishlistItems] = useState([
     {
       id: 0,
-      item: "",
-      price: 0,
+      item: "SAMPLE",
+      price: 999,
     },
   ]);
   const [categories, setCategories] = useState([
@@ -57,10 +58,14 @@ function App() {
       adding a new object to the array.
     */
 
-    // Update first object with real values if it's the empty placeholder object
-    if (!wishlistItems[0].item && !wishlistItems[0].price) {
+    // Update first object with real values if it's the placeholder object
+    if (
+      wishlistItems[0] &&
+      wishlistItems[0].item === "SAMPLE" &&
+      wishlistItems[0].price === 999
+    ) {
       const updatedItems = wishlistItems.map((item) => {
-        if (item.id === 0 && !item.item && !item.price) {
+        if (item.id === 0) {
           return {
             id: item.id,
             item: itemInfo.item,
@@ -72,7 +77,6 @@ function App() {
       });
 
       setWishlistItems(updatedItems);
-      console.log(wishlistItems);
     } else {
       // Otherwise, add a new object
       setWishlistItems([
@@ -83,7 +87,6 @@ function App() {
           price: parseFloat(itemInfo.price),
         },
       ]);
-      console.log(wishlistItems);
     }
   }
 
@@ -131,16 +134,16 @@ function App() {
     setStartingBalance(parseFloat(inputBalance));
   }
 
-  function handleSelectItem(e, targetId) {
+  function handleSelectItem(selectBox, targetId) {
     /*
       The function takes a reference to an element in the wishlist table
       and its corresponding entry's ID and adds or removes the ID to/from
       the state array holding all selected items' IDs.
     */
 
-    if (e.target.checked) {
+    if (selectBox.checked) {
       setIdsOfSelectedItems([...idsOfSelectedItems, targetId]);
-    } else if (!e.target.checked) {
+    } else if (!selectBox.checked) {
       const updatedIds = idsOfSelectedItems.filter((id) => {
         return id !== targetId;
       });
@@ -149,6 +152,11 @@ function App() {
   }
 
   function handleSaveEditedItem(targetEntryId, inputValues) {
+    /*
+      The function takes a target entry's ID and new input values
+      and updates the original entry.
+    */
+
     const updatedItems = wishlistItems.map((item) => {
       if (item.id === parseInt(targetEntryId)) {
         return {
@@ -162,7 +170,26 @@ function App() {
     });
 
     setWishlistItems([...updatedItems]);
-    console.log(wishlistItems);
+  }
+
+  function handleDeleteItem(targetEntryId) {
+    /*
+      The function takes a target entry's ID and deletes the entry
+      while also removing its ID from the selected IDs array in case
+      the entry was still selected at the time of deletion.
+    */
+
+    const updatedItems = wishlistItems.filter((item) => {
+      return item.id !== parseInt(targetEntryId);
+    });
+
+    setWishlistItems([...updatedItems]);
+
+    const updatedSelectedIds = idsOfSelectedItems.filter((id) => {
+      return id !== parseInt(targetEntryId);
+    });
+
+    setIdsOfSelectedItems([...updatedSelectedIds]);
   }
 
   return (
@@ -177,6 +204,7 @@ function App() {
         handleUpdateStartBalance,
         handleSelectItem,
         handleSaveEditedItem,
+        handleDeleteItem,
       }}
     >
       <RouterProvider router={router} />
