@@ -45,7 +45,7 @@ function Wishlist() {
       const selectedTotal = calculateSelectedTotal();
       const balances = categories.map((category) => category.balance);
       const sumOfBalances = balances
-        .reduce((total, currentBalance) => total + currentBalance)
+        .reduce((total, currentBalance) => total + currentBalance, 0)
         .toFixed(2);
       total =
         startingBalance -

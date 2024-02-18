@@ -15,6 +15,8 @@ export const WishlistContext = createContext({
   handleSelectItem: () => {},
   handleSaveEditedItem: () => {},
   handleDeleteItem: () => {},
+  handleSaveEditedCategory: () => {},
+  handleDeleteCategory: () => {},
 });
 
 const router = createBrowserRouter([
@@ -43,8 +45,8 @@ function App() {
   const [categories, setCategories] = useState([
     {
       id: 0,
-      category: "",
-      balance: 0,
+      category: "SAMPLE",
+      balance: 999,
     },
   ]);
   const [startingBalance, setStartingBalance] = useState(0);
@@ -82,7 +84,9 @@ function App() {
       setWishlistItems([
         ...wishlistItems,
         {
-          id: wishlistItems.length,
+          id: wishlistItems[wishlistItems.length - 1]
+            ? wishlistItems[wishlistItems.length - 1].id + 1
+            : wishlistItems.length + 1,
           item: itemInfo.item,
           price: parseFloat(itemInfo.price),
         },
@@ -99,9 +103,13 @@ function App() {
     */
 
     // Update first object with real values if it's the empty placeholder object
-    if (!categories[0].category && !categories[0].balance) {
+    if (
+      categories[0] &&
+      categories[0].item === "SAMPLE" &&
+      categories[0].price === 999
+    ) {
       const updatedCategories = categories.map((category) => {
-        if (category.id === 0 && !category.category && !category.balance) {
+        if (category.id === 0) {
           return {
             id: category.id,
             category: categoryInfo.category,
@@ -118,7 +126,9 @@ function App() {
       setCategories([
         ...categories,
         {
-          id: categories.length,
+          id: categories[categories.length - 1]
+            ? categories[categories.length - 1].id + 1
+            : categories.length + 1,
           category: categoryInfo.category,
           balance: parseFloat(categoryInfo.balance),
         },
@@ -132,7 +142,6 @@ function App() {
       storing the starting budget (float value).
     */
     setStartingBalance(parseFloat(inputBalance));
-    console.log("saved state: ", startingBalance);
   }
 
   function handleSelectItem(selectBox, targetId) {
@@ -193,6 +202,36 @@ function App() {
     setIdsOfSelectedItems([...updatedSelectedIds]);
   }
 
+  function handleSaveEditedCategory(targetEntryId, inputValues) {
+    /*
+      The function takes a target entry's ID and new input values
+      and updates the original entry.
+    */
+    const updatedCategories = categories.map((category) => {
+      if (category.id === parseInt(targetEntryId)) {
+        return {
+          ...category,
+          category: inputValues.categoryName,
+          balance: parseFloat(inputValues.balanceAmount),
+        };
+      } else {
+        return category;
+      }
+    });
+
+    setCategories([...updatedCategories]);
+  }
+
+  function handleDeleteCategory(targetEntryId) {
+    // The function takes a target entry's ID and deletes the entry.
+
+    const updatedCategories = categories.filter((category) => {
+      return category.id !== parseInt(targetEntryId);
+    });
+
+    setCategories([...updatedCategories]);
+  }
+
   return (
     <WishlistContext.Provider
       value={{
@@ -206,6 +245,8 @@ function App() {
         handleSelectItem,
         handleSaveEditedItem,
         handleDeleteItem,
+        handleSaveEditedCategory,
+        handleDeleteCategory,
       }}
     >
       <RouterProvider router={router} />

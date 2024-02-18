@@ -94,7 +94,7 @@ describe("BudgetTable component", () => {
 
     const table = screen.getByRole("table");
     const wishlistExpense = screen.getByRole("row", {
-      name: "Wishlist Expenses* $38.77 Edit Delete",
+      name: "Wishlist Expenses* $38.77",
     });
 
     expect(table).toBeInTheDocument();

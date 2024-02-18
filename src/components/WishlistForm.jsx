@@ -72,6 +72,10 @@ function WishlistForm({ headerText }) {
       item: "",
       price: "",
     });
+    setCategoryInfo({
+      category: "",
+      balance: "",
+    });
   }
 
   return (
