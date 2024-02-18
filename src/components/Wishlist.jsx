@@ -73,6 +73,10 @@ function Wishlist() {
             calculateTotal={calculateTotal}
             calculateSelectedTotal={calculateSelectedTotal}
           />
+          <p>
+            * Current Balance and Wishlist Expenses categories are default
+            categories
+          </p>
           <BudgetBalanceForm />
           <WishlistForm headerText="category" />
         </div>

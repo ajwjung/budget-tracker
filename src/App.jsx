@@ -132,6 +132,7 @@ function App() {
       storing the starting budget (float value).
     */
     setStartingBalance(parseFloat(inputBalance));
+    console.log("saved state: ", startingBalance);
   }
 
   function handleSelectItem(selectBox, targetId) {

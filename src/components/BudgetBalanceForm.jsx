@@ -6,7 +6,7 @@ function BudgetBalanceForm() {
   const [startBalance, setStartBalance] = useState("");
 
   function handleStartBalanceChange(e) {
-    setStartBalance(e.target.value);
+    setStartBalance(parseFloat(e.target.value));
   }
 
   return (
