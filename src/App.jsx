@@ -9,6 +9,7 @@ export const WishlistContext = createContext({
   categories: [],
   startingBalance: 0,
   idsOfSelectedItems: [],
+  transactions: [],
   handleAddNewItem: () => {},
   handleAddNewCategory: () => {},
   handleUpdateStartBalance: () => {},
@@ -17,6 +18,7 @@ export const WishlistContext = createContext({
   handleDeleteItem: () => {},
   handleSaveEditedCategory: () => {},
   handleDeleteCategory: () => {},
+  handleAddTransaction: () => {},
 });
 
 const router = createBrowserRouter([
@@ -51,6 +53,15 @@ function App() {
   ]);
   const [startingBalance, setStartingBalance] = useState(0);
   const [idsOfSelectedItems, setIdsOfSelectedItems] = useState([]);
+  const [transactions, setTransactions] = useState([
+    {
+      id: 0,
+      date: "2024-01-01",
+      transactionCategory: "Food/Drinks",
+      description: "FAKE BURGER",
+      amount: -19.99,
+    },
+  ]);
 
   function handleAddNewItem(itemInfo) {
     /*
@@ -232,6 +243,59 @@ function App() {
     setCategories([...updatedCategories]);
   }
 
+  function handleAddTransaction(transactionType, transactionInfo) {
+    /*
+      The function takes an object for a new transaction
+      and updates the state array holding all transactions
+      by either updating the original placeholder object or by
+      adding a new object to the array.
+      
+      Deposits are treated as positive amounts and expenses
+      are treated as negative amounts.
+    */
+
+    // Update first object with real values if it's the placeholder object
+    if (
+      transactions[0] &&
+      transactions[0].description === "FAKE BURGER" &&
+      transactions[0].amount === -19.99
+    ) {
+      const updatedTransactions = transactions.map((transaction) => {
+        if (transaction.id === 0) {
+          return {
+            id: transaction.id,
+            date: transactionInfo.date,
+            transactionCategory: transactionInfo.transactionCategory,
+            description: transactionInfo.description,
+            amount:
+              transactionType === "transaction"
+                ? parseFloat(`-${transactionInfo.amount}`).toFixed(2)
+                : parseFloat(transactionInfo.amount).toFixed(2),
+          };
+        }
+      });
+
+      setTransactions(updatedTransactions);
+    } else {
+      // Otherwise add a new object
+      setTransactions([
+        ...transactions,
+        {
+          id: transactions[transactions.length - 1]
+            ? transactions[transactions.length - 1].id + 1
+            : transactions.length + 1,
+          date: transactionInfo.date,
+          transactionCategory: transactionInfo.transactionCategory,
+          description: transactionInfo.description,
+          amount:
+            transactionType === "transaction"
+              ? parseFloat(`-${transactionInfo.amount}`).toFixed(2)
+              : parseFloat(transactionInfo.amount).toFixed(2),
+        },
+      ]);
+    }
+  }
+
   return (
     <WishlistContext.Provider
       value={{
@@ -239,6 +303,7 @@ function App() {
         categories,
         startingBalance,
         idsOfSelectedItems,
+        transactions,
         handleAddNewItem,
         handleAddNewCategory,
         handleUpdateStartBalance,
@@ -247,6 +312,7 @@ function App() {
         handleDeleteItem,
         handleSaveEditedCategory,
         handleDeleteCategory,
+        handleAddTransaction,
       }}
     >
       <RouterProvider router={router} />
