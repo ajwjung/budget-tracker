@@ -285,148 +285,188 @@ function Spendings() {
     }
   }
 
+  function sortTransactionsByDate() {
+    /*
+      The function sorts a copy of the `transactions` array by date
+      from most recent to oldest.
+    */
+    return transactions.slice().sort((transactionA, transactionB) => {
+      return new Date(transactionB.date) - new Date(transactionA.date);
+    });
+  }
+
+  const sortedTransactions = sortTransactionsByDate();
+
   return (
     <>
       <Header />
       <main>
         <div className="container my-5">
-          <h2>Enter Your Spendings</h2>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit("transactions", transactionInput);
-            }}
-            id="spendings-form"
-          >
-            <div className="form-floating mb-3">
-              <input
-                className="form-control"
-                type="date"
-                name="transactionDate"
-                id="transaction-date"
-                value={transactionInput.date}
-                onChange={(e) => {
-                  updateTransactionInput("date", e.target.value);
-                }}
-                required
-              />
-              <label htmlFor="transaction-date">Transaction Date</label>
-            </div>
-            <div className="form-floating mb-3">
-              <select
-                className="form-select"
-                name="transactionCategory"
-                id="transaction-category"
-                value={transactionInput.transactionCategory}
-                onChange={(e) => {
-                  updateTransactionInput(
-                    "transaction category",
-                    e.target.value
-                  );
-                }}
-                required
+          <p className="d-inline-flex gap-1">
+            <span
+              data-bs-toggle="collapse"
+              data-bs-target=".expenses-container"
+            >
+              <button
+                data-bs-toggle="button"
+                className="btn btn-outline-primary"
+                type="button"
               >
-                {selectOptions.map((option, index) => {
-                  return (
-                    <option value={option} key={`option${index}`}>
-                      {option}
-                    </option>
-                  );
-                })}
-              </select>
-              <label htmlFor="transaction-category">Transaction Type</label>
-            </div>
-            <div className="form-floating mb-3">
-              <input
-                className="form-control"
-                type="text"
-                name="transactionDescription"
-                id="transaction-description"
-                value={transactionInput.description}
-                onChange={(e) => {
-                  updateTransactionInput("description", e.target.value);
-                }}
-              />
-              <label htmlFor="transaction-description">Description</label>
-            </div>
-            <div className="form-floating mb-3">
-              <input
-                className="form-control"
-                type="number"
-                min="0.01"
-                step="0.01"
-                name="transactionAmount"
-                id="transaction-amount"
-                value={transactionInput.amount}
-                onChange={(e) => {
-                  updateTransactionInput("amount", e.target.value);
-                }}
-                required
-              />
-              <label htmlFor="transaction-amount">Amount ($)</label>
-            </div>
-            <button className="btn btn-primary" type="submit">
-              Save
-            </button>
-          </form>
-        </div>
-        <div className="container">
-          <h2>Enter Your Deposits</h2>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit("deposits", depositInput);
-            }}
-            id="deposits-form"
-          >
-            <div className="form-floating mb-3">
-              <input
-                className="form-control"
-                type="date"
-                name="depositDate"
-                id="deposit-date"
-                value={depositInput.date}
-                onChange={(e) => {
-                  updateDepositInput("date", e.target.value);
-                }}
-                required
-              />
-              <label htmlFor="deposit-date">Deposit Date</label>
-            </div>
-            <div className="form-floating mb-3">
-              <input
-                className="form-control"
-                type="text"
-                name="depositDescription"
-                id="deposit-description"
-                value={depositInput.description}
-                onChange={(e) => {
-                  updateDepositInput("description", e.target.value);
-                }}
-                required
-              />
-              <label htmlFor="deposit-description">Description</label>
-            </div>
-            <div className="form-floating mb-3">
-              <input
-                className="form-control"
-                type="number"
-                name="incomeAmount"
-                id="income-amount"
-                min="0.01"
-                step="0.01"
-                value={depositInput.amount}
-                onChange={(e) => {
-                  updateDepositInput("amount", e.target.value);
-                }}
-                required
-              />
-              <label htmlFor="income-amount">Amount ($)</label>
-            </div>
-            <button className="btn btn-primary" type="submit">
-              Save
-            </button>
-          </form>
+                Enter an Expense
+              </button>
+            </span>
+            <span
+              data-bs-toggle="collapse"
+              data-bs-target=".deposits-container"
+            >
+              <button
+                data-bs-toggle="button"
+                className="btn btn-outline-primary"
+                type="button"
+              >
+                Enter a Deposit
+              </button>
+            </span>
+          </p>
+          <div className="expenses-container container collapse">
+            <h2>Enter an Expense:</h2>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit("transactions", transactionInput);
+              }}
+              id="spendings-form"
+            >
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="date"
+                  name="transactionDate"
+                  id="transaction-date"
+                  value={transactionInput.date}
+                  onChange={(e) => {
+                    updateTransactionInput("date", e.target.value);
+                  }}
+                  required
+                />
+                <label htmlFor="transaction-date">Transaction Date</label>
+              </div>
+              <div className="form-floating mb-3">
+                <select
+                  className="form-select"
+                  name="transactionCategory"
+                  id="transaction-category"
+                  value={transactionInput.transactionCategory}
+                  onChange={(e) => {
+                    updateTransactionInput(
+                      "transaction category",
+                      e.target.value
+                    );
+                  }}
+                  required
+                >
+                  {selectOptions.map((option, index) => {
+                    return (
+                      <option value={option} key={`option${index}`}>
+                        {option}
+                      </option>
+                    );
+                  })}
+                </select>
+                <label htmlFor="transaction-category">Transaction Type</label>
+              </div>
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="text"
+                  name="transactionDescription"
+                  id="transaction-description"
+                  value={transactionInput.description}
+                  onChange={(e) => {
+                    updateTransactionInput("description", e.target.value);
+                  }}
+                />
+                <label htmlFor="transaction-description">Description</label>
+              </div>
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  name="transactionAmount"
+                  id="transaction-amount"
+                  value={transactionInput.amount}
+                  onChange={(e) => {
+                    updateTransactionInput("amount", e.target.value);
+                  }}
+                  required
+                />
+                <label htmlFor="transaction-amount">Amount ($)</label>
+              </div>
+              <button className="btn btn-primary" type="submit">
+                Save
+              </button>
+            </form>
+          </div>
+          <div className="deposits-container container collapse">
+            <h2>Enter a Deposit:</h2>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit("deposits", depositInput);
+              }}
+              id="deposits-form"
+            >
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="date"
+                  name="depositDate"
+                  id="deposit-date"
+                  value={depositInput.date}
+                  onChange={(e) => {
+                    updateDepositInput("date", e.target.value);
+                  }}
+                  required
+                />
+                <label htmlFor="deposit-date">Deposit Date</label>
+              </div>
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="text"
+                  name="depositDescription"
+                  id="deposit-description"
+                  value={depositInput.description}
+                  onChange={(e) => {
+                    updateDepositInput("description", e.target.value);
+                  }}
+                  required
+                />
+                <label htmlFor="deposit-description">Description</label>
+              </div>
+              <div className="form-floating mb-3">
+                <input
+                  className="form-control"
+                  type="number"
+                  name="incomeAmount"
+                  id="income-amount"
+                  min="0.01"
+                  step="0.01"
+                  value={depositInput.amount}
+                  onChange={(e) => {
+                    updateDepositInput("amount", e.target.value);
+                  }}
+                  required
+                />
+                <label htmlFor="income-amount">Amount ($)</label>
+              </div>
+              <button className="btn btn-primary" type="submit">
+                Save
+              </button>
+            </form>
+          </div>
         </div>
         <div className="container my-5">
           <h2>Past Transactions</h2>
@@ -441,7 +481,7 @@ function Spendings() {
               </tr>
             </thead>
             <tbody>
-              {transactions.map((transaction) => {
+              {sortedTransactions.map((transaction) => {
                 return (
                   <tr
                     key={`t${transaction.id}`}
@@ -463,7 +503,6 @@ function Spendings() {
                         className="btn btn-warning"
                         type="button"
                       >
-                        {/* {!isEditTransaction ? "Edit" : "Save"} */}
                         Edit
                       </button>
                       <button
