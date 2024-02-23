@@ -17,6 +17,7 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
     category: "",
     balance: "",
   });
+  let idOfEditedCategory;
 
   function formatRemainingBalance() {
     /*
@@ -153,6 +154,19 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
     setIsEditCategory(!isEditCategory);
   }
 
+  function updateButtonText(e, targetEntryId) {
+    /*
+      The function takes the button node and updates its text content
+      to "Save" when the current category is marked as being edited
+      or to "Edit" in other scenarios.
+    */
+    if (!isEditCategory && targetEntryId === idOfEditedCategory) {
+      e.target.textContent = "Save";
+    } else {
+      e.target.textContent = "Edit";
+    }
+  }
+
   return (
     <table className="table table-striped">
       <thead>
@@ -188,7 +202,9 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
                   onClick={(e) => {
                     const targetClass = e.target.closest("tr").classList[0];
                     const targetEntryId = parseInt(targetClass.split("cat")[1]);
+                    idOfEditedCategory = targetEntryId;
                     handleEditCategory(e, targetEntryId);
+                    updateButtonText(e, targetEntryId);
                   }}
                   type="button"
                   className="btn btn-warning"

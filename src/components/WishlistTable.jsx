@@ -15,6 +15,7 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
     item: "",
     price: "",
   });
+  let idOfEditedItem;
 
   function handleInputChange(field, value) {
     if (field === "item") {
@@ -107,6 +108,19 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
     setIsEdit(!isEdit);
   }
 
+  function updateButtonText(e, targetEntryId) {
+    /*
+      The function takes the button node and updates its text content
+      to "Save" when the current wishlist item is marked as being edited
+      or to "Edit" in other scenarios.
+    */
+    if (!isEdit && targetEntryId === idOfEditedItem) {
+      e.target.textContent = "Save";
+    } else {
+      e.target.textContent = "Edit";
+    }
+  }
+
   return (
     <table className="table table-striped">
       <thead>
@@ -153,7 +167,9 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
                   onClick={(e) => {
                     const targetClass = e.target.closest("tr").className;
                     const targetEntryId = targetClass.split("item")[1];
+                    idOfEditedItem = targetEntryId;
                     handleEditRow(e, targetEntryId);
+                    updateButtonText(e, targetEntryId);
                   }}
                   type="button"
                   className="btn btn-warning"
