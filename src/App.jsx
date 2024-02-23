@@ -19,6 +19,8 @@ export const WishlistContext = createContext({
   handleSaveEditedCategory: () => {},
   handleDeleteCategory: () => {},
   handleAddTransaction: () => {},
+  handleSaveEditedTransaction: () => {},
+  handleDeleteTransaction: () => {},
 });
 
 const router = createBrowserRouter([
@@ -257,6 +259,7 @@ function App() {
     // Update first object with real values if it's the placeholder object
     if (
       transactions[0] &&
+      transactions[0].transactionCategory === "Food/Drinks" &&
       transactions[0].description === "FAKE BURGER" &&
       transactions[0].amount === -19.99
     ) {
@@ -296,6 +299,37 @@ function App() {
     }
   }
 
+  function handleSaveEditedTransaction(targetEntryId, inputValues) {
+    /*
+      The function takes a target entry's ID and new input values
+      and updates the original entry.
+    */
+    const updatedTransactions = transactions.map((transaction) => {
+      if (transaction.id === parseInt(targetEntryId)) {
+        return {
+          ...transaction,
+          date: inputValues.transactionDate,
+          transactionCategory: inputValues.transactionType,
+          description: inputValues.transactionDescription,
+          amount: parseFloat(inputValues.transactionAmount),
+        };
+      } else {
+        return transaction;
+      }
+    });
+
+    setTransactions([...updatedTransactions]);
+  }
+
+  function handleDeleteTransaction(targetEntryId) {
+    // The function takes a target entry's ID and deletes the entry.
+    const updatedTransactions = transactions.filter((transaction) => {
+      return transaction.id !== parseInt(targetEntryId);
+    });
+
+    setTransactions([...updatedTransactions]);
+  }
+
   return (
     <WishlistContext.Provider
       value={{
@@ -313,6 +347,8 @@ function App() {
         handleSaveEditedCategory,
         handleDeleteCategory,
         handleAddTransaction,
+        handleSaveEditedTransaction,
+        handleDeleteTransaction,
       }}
     >
       <RouterProvider router={router} />

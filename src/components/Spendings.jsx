@@ -3,7 +3,21 @@ import Header from "./Header";
 import { WishlistContext } from "../App";
 
 function Spendings() {
-  const { transactions, handleAddTransaction } = useContext(WishlistContext);
+  const {
+    transactions,
+    handleAddTransaction,
+    handleSaveEditedTransaction,
+    handleDeleteTransaction,
+  } = useContext(WishlistContext);
+  const selectOptions = [
+    "Bills/Utilities",
+    "Entertainment",
+    "Food/Drinks",
+    "Housing",
+    "Medical/Healthcare",
+    "Shopping",
+    "Other",
+  ];
   const [transactionInput, setTransactionInput] = useState({
     date: "",
     transactionCategory: "",
@@ -16,6 +30,14 @@ function Spendings() {
     description: "",
     amount: "",
   });
+  const [isEditTransaction, setIsEditTransaction] = useState(false);
+  const [updatedTransaction, setUpdatedTransaction] = useState({
+    date: "",
+    transactionCategory: "",
+    description: "",
+    amount: "",
+  });
+  let idOfEditedTransaction = null;
 
   function updateTransactionInput(field, value) {
     if (field === "date") {
@@ -73,10 +95,193 @@ function Spendings() {
       handleAddTransaction("deposit", inputValues);
       setDepositInput({
         date: "",
-        type: "Deposit",
+        transactionCategory: "Deposit",
         description: "",
         amount: "",
       });
+    }
+  }
+
+  function handleInputChange(field, value) {
+    if (field === "date") {
+      setUpdatedTransaction({
+        ...updatedTransaction,
+        date: value,
+      });
+    } else if (field === "type") {
+      setUpdatedTransaction({
+        ...updatedTransaction,
+        transactionCategory: value,
+      });
+    } else if (field === "description") {
+      setUpdatedTransaction({
+        ...updatedTransaction,
+        description: value,
+      });
+    } else if (field === "amount") {
+      setUpdatedTransaction({
+        ...updatedTransaction,
+        amount: parseFloat(value), // may need to Math.abs() this? idk yet
+      });
+    }
+  }
+
+  function getInputValues(e) {
+    /*
+      The function takes the target button node and uses its parent
+      `tr` node to get the tranasction cells' values. This alternative
+      is used because states are asynchronous and we cannot use the 
+      updated object immediately.
+    */
+
+    const dateCell = e.target.closest("tr").firstElementChild;
+    const typeCell = dateCell.nextElementSibling;
+    const descriptionCell = typeCell.nextElementSibling;
+    const amountCell = descriptionCell.nextElementSibling;
+
+    const transactionDate = dateCell.textContent;
+    const transactionType = typeCell.textContent;
+    const transactionDescription = descriptionCell.textContent;
+    const transactionAmount = amountCell.textContent;
+
+    return {
+      transactionDate,
+      transactionType,
+      transactionDescription,
+      transactionAmount,
+    };
+  }
+
+  function handleEditTransaction(e, targetEntryId) {
+    /*
+      The function takes the target button node to target the parent
+      node `tr` and access the `td` cells whose values need to be updated.
+      On edit, the text content is replaced with input fields and on save,
+      the input fields are replaced with updated text values.
+           
+      The cells' original values are fed back into the input fields
+      for quick editing.
+    */
+
+    if (!isEditTransaction) {
+      // In edit mode => change text to inputs
+      const [dateCell, typeCell, descriptionCell, amountCell] =
+        e.target.closest("tr").children;
+      const transactionDate = dateCell.textContent;
+      const transactionType = typeCell.textContent;
+      const transactionDescription = descriptionCell.textContent;
+      const transactionAmount = Math.abs(parseFloat(amountCell.textContent));
+
+      const dateInput = document.createElement("input");
+      dateInput.setAttribute("type", "date");
+      dateInput.classList.add("form-control");
+      dateInput.value = transactionDate;
+      dateInput.addEventListener("change", (e) => {
+        handleInputChange("date", e.target.value);
+      });
+
+      let typeSelectInput;
+      if (transactionType !== "Deposit") {
+        // Create a select-option for each expense category
+        typeSelectInput = document.createElement("select");
+        typeSelectInput.classList.add("form-select");
+        const options = selectOptions.map((option) => {
+          const newOption = document.createElement("option");
+          newOption.value = option;
+          newOption.textContent = option;
+
+          return newOption;
+        });
+        options.forEach((option) => {
+          typeSelectInput.appendChild(option);
+        });
+        typeSelectInput.value = transactionType;
+        typeSelectInput.addEventListener("change", (e) => {
+          handleInputChange("type", e.target.value);
+        });
+      } else if (transactionType === "Deposit") {
+        // Create a select-option for deposits
+        typeSelectInput = document.createElement("select");
+        typeSelectInput.classList.add("form-select");
+        const inputOption = document.createElement("option");
+        inputOption.value = "Deposit";
+        inputOption.textContent = "Deposit";
+        typeSelectInput.appendChild(inputOption);
+        typeSelectInput.addEventListener("change", (e) => {
+          handleInputChange("type", e.target.value);
+        });
+      }
+
+      const descriptionInput = document.createElement("input");
+      descriptionInput.setAttribute("type", "textbox");
+      descriptionInput.classList.add("form-control");
+      descriptionInput.value = transactionDescription;
+      descriptionInput.addEventListener("change", (e) => {
+        handleInputChange("description", e.target.value);
+      });
+
+      const amountInput = document.createElement("input");
+      amountInput.setAttribute("type", "number");
+      amountInput.classList.add("form-control");
+      amountInput.setAttribute("step", "0.01");
+      amountInput.setAttribute("min", "0.01");
+      amountInput.value = transactionAmount;
+      amountInput.addEventListener("change", (e) => {
+        handleInputChange("amount", e.target.value);
+      });
+
+      dateCell.innerHTML = "";
+      dateCell.appendChild(dateInput);
+
+      typeCell.innerHTML = "";
+      typeCell.appendChild(typeSelectInput);
+
+      descriptionCell.innerHTML = "";
+      descriptionCell.appendChild(descriptionInput);
+
+      amountCell.innerHTML = "";
+      amountCell.appendChild(amountInput);
+    } else {
+      // In save mode => change inputs to text
+      const [dateCell, typeCell, descriptionCell, amountCell] =
+        e.target.closest("tr").children;
+
+      const transactionDate = dateCell.firstChild.value;
+      const transactionType = typeCell.firstChild.value;
+      const transactionDescription = descriptionCell.firstChild.value;
+      const transactionAmount =
+        transactionType !== "Deposit"
+          ? `-${amountCell.firstChild.value}`
+          : amountCell.firstChild.value;
+
+      dateCell.removeChild(dateCell.firstChild);
+      dateCell.textContent = transactionDate;
+
+      typeCell.removeChild(typeCell.firstChild);
+      typeCell.textContent = transactionType;
+
+      descriptionCell.removeChild(descriptionCell.firstChild);
+      descriptionCell.textContent = transactionDescription;
+
+      amountCell.removeChild(amountCell.firstChild);
+      amountCell.textContent = transactionAmount;
+
+      handleSaveEditedTransaction(targetEntryId, getInputValues(e));
+    }
+
+    setIsEditTransaction(!isEditTransaction);
+  }
+
+  function updateButtonText(e, targetEntryId) {
+    /*
+      The function takes the button node and updates its text content
+      to "Save" when the current transaction is marked as being edited
+      or to "Edit" in other scenarios.
+    */
+    if (!isEditTransaction && targetEntryId === idOfEditedTransaction) {
+      e.target.textContent = "Save";
+    } else {
+      e.target.textContent = "Edit";
     }
   }
 
@@ -121,13 +326,13 @@ function Spendings() {
                 }}
                 required
               >
-                <option value="Bills/Utilities">Bills/Utilities</option>
-                <option value="Entertainment">Entertainment</option>
-                <option value="Food/Drinks">Food/Drinks</option>
-                <option value="Housing">Housing</option>
-                <option value="Medical/Healthcare">Medical/Healthcare</option>
-                <option value="Shopping">Shopping</option>
-                <option value="Other">Other</option>
+                {selectOptions.map((option, index) => {
+                  return (
+                    <option value={option} key={`option${index}`}>
+                      {option}
+                    </option>
+                  );
+                })}
               </select>
               <label htmlFor="transaction-category">Transaction Type</label>
             </div>
@@ -141,7 +346,6 @@ function Spendings() {
                 onChange={(e) => {
                   updateTransactionInput("description", e.target.value);
                 }}
-                required
               />
               <label htmlFor="transaction-description">Description</label>
             </div>
@@ -248,10 +452,29 @@ function Spendings() {
                     <td>{transaction.description}</td>
                     <td>{transaction.amount}</td>
                     <td>
-                      <button className="btn btn-warning" type="button">
+                      <button
+                        onClick={(e) => {
+                          const targetClass = e.target.closest("tr").className;
+                          const targetEntryId = targetClass.split("t")[1];
+                          idOfEditedTransaction = targetEntryId;
+                          handleEditTransaction(e, targetEntryId);
+                          updateButtonText(e, targetEntryId);
+                        }}
+                        className="btn btn-warning"
+                        type="button"
+                      >
+                        {/* {!isEditTransaction ? "Edit" : "Save"} */}
                         Edit
                       </button>
-                      <button className="btn btn-danger" type="button">
+                      <button
+                        onClick={(e) => {
+                          const targetClass = e.target.closest("tr").className;
+                          const targetEntryId = targetClass.split("t")[1];
+                          handleDeleteTransaction(targetEntryId);
+                        }}
+                        className="btn btn-danger"
+                        type="button"
+                      >
                         Delete
                       </button>
                     </td>
