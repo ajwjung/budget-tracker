@@ -7,6 +7,7 @@ import { useState, createContext } from "react";
 export const WishlistContext = createContext({
   wishlistItems: [],
   categories: [],
+  expenseCategories: [],
   startingBalance: 0,
   idsOfSelectedItems: [],
   transactions: [],
@@ -53,6 +54,15 @@ function App() {
       balance: 999,
     },
   ]);
+  const expenseCategories = [
+    "Bills/Utilities",
+    "Entertainment",
+    "Food/Drinks",
+    "Housing",
+    "Medical/Healthcare",
+    "Shopping",
+    "Other",
+  ];
   const [startingBalance, setStartingBalance] = useState(0);
   const [idsOfSelectedItems, setIdsOfSelectedItems] = useState([]);
   const [transactions, setTransactions] = useState([
@@ -335,6 +345,7 @@ function App() {
       value={{
         wishlistItems,
         categories,
+        expenseCategories,
         startingBalance,
         idsOfSelectedItems,
         transactions,

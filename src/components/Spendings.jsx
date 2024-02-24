@@ -1,23 +1,16 @@
 import { useState, useContext } from "react";
 import Header from "./Header";
 import { WishlistContext } from "../App";
+import Calculate from "../scripts/Calculate";
 
 function Spendings() {
   const {
     transactions,
+    expenseCategories,
     handleAddTransaction,
     handleSaveEditedTransaction,
     handleDeleteTransaction,
   } = useContext(WishlistContext);
-  const selectOptions = [
-    "Bills/Utilities",
-    "Entertainment",
-    "Food/Drinks",
-    "Housing",
-    "Medical/Healthcare",
-    "Shopping",
-    "Other",
-  ];
   const [transactionInput, setTransactionInput] = useState({
     date: "",
     transactionCategory: "",
@@ -185,7 +178,7 @@ function Spendings() {
         // Create a select-option for each expense category
         typeSelectInput = document.createElement("select");
         typeSelectInput.classList.add("form-select");
-        const options = selectOptions.map((option) => {
+        const options = expenseCategories.map((option) => {
           const newOption = document.createElement("option");
           newOption.value = option;
           newOption.textContent = option;
@@ -285,17 +278,7 @@ function Spendings() {
     }
   }
 
-  function sortTransactionsByDate() {
-    /*
-      The function sorts a copy of the `transactions` array by date
-      from most recent to oldest.
-    */
-    return transactions.slice().sort((transactionA, transactionB) => {
-      return new Date(transactionB.date) - new Date(transactionA.date);
-    });
-  }
-
-  const sortedTransactions = sortTransactionsByDate();
+  const sortedTransactions = Calculate.sortTransactionsByDate(transactions);
 
   return (
     <>
@@ -365,7 +348,7 @@ function Spendings() {
                   }}
                   required
                 >
-                  {selectOptions.map((option, index) => {
+                  {expenseCategories.map((option, index) => {
                     return (
                       <option value={option} key={`option${index}`}>
                         {option}
