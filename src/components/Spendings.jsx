@@ -13,7 +13,7 @@ function Spendings() {
   } = useContext(WishlistContext);
   const [transactionInput, setTransactionInput] = useState({
     date: "",
-    transactionCategory: "",
+    transactionCategory: "Bills/Utilities",
     description: "",
     amount: "",
   });
@@ -24,7 +24,7 @@ function Spendings() {
     amount: "",
   });
   const [isEditTransaction, setIsEditTransaction] = useState(false);
-  const [updatedTransaction, setUpdatedTransaction] = useState({
+  const [editedTransactionInput, setEditedTransactionInput] = useState({
     date: "",
     transactionCategory: "",
     description: "",
@@ -33,6 +33,11 @@ function Spendings() {
   let idOfEditedTransaction = null;
 
   function updateTransactionInput(field, value) {
+    /*
+      The function handles updating the `transactionInput` state and
+      gets called whenever the user types into an input field of the
+      Expenses form.
+    */
     if (field === "date") {
       setTransactionInput({
         ...transactionInput,
@@ -57,6 +62,11 @@ function Spendings() {
   }
 
   function updateDepositInput(field, value) {
+    /*
+      The function handles updating the `depositInput` state and
+      gets called whenever the user types into an input field of the
+      Deposit form.
+    */
     if (field === "date") {
       setDepositInput({
         ...depositInput,
@@ -80,7 +90,7 @@ function Spendings() {
       handleAddTransaction("transaction", inputValues);
       setTransactionInput({
         date: "",
-        transactionCategory: "",
+        transactionCategory: "Bills/Utilities",
         description: "",
         amount: "",
       });
@@ -96,25 +106,30 @@ function Spendings() {
   }
 
   function handleInputChange(field, value) {
+    /*
+      The function handles updating the `editedTransactionInput` state,
+      which holds the updated values of the currently-being edited
+      entry's input fields.
+    */
     if (field === "date") {
-      setUpdatedTransaction({
-        ...updatedTransaction,
+      setEditedTransactionInput({
+        ...editedTransactionInput,
         date: value,
       });
     } else if (field === "type") {
-      setUpdatedTransaction({
-        ...updatedTransaction,
+      setEditedTransactionInput({
+        ...editedTransactionInput,
         transactionCategory: value,
       });
     } else if (field === "description") {
-      setUpdatedTransaction({
-        ...updatedTransaction,
+      setEditedTransactionInput({
+        ...editedTransactionInput,
         description: value,
       });
     } else if (field === "amount") {
-      setUpdatedTransaction({
-        ...updatedTransaction,
-        amount: parseFloat(value), // may need to Math.abs() this? idk yet
+      setEditedTransactionInput({
+        ...editedTransactionInput,
+        amount: parseFloat(value),
       });
     }
   }
