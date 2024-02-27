@@ -23,14 +23,16 @@ function Spendings() {
     description: "",
     amount: "",
   });
-  const [isEditTransaction, setIsEditTransaction] = useState(false);
+  const [isEditTransaction, setIsEditTransaction] = useState({
+    status: false,
+    entryId: null,
+  });
   const [editedTransactionInput, setEditedTransactionInput] = useState({
     date: "",
     transactionCategory: "",
     description: "",
     amount: "",
   });
-  let idOfEditedTransaction = null;
 
   function updateTransactionInput(field, value) {
     /*
@@ -163,15 +165,15 @@ function Spendings() {
   function handleEditTransaction(e, targetEntryId) {
     /*
       The function takes the target button node to target the parent
-      node `tr` and access the `td` cells whose values need to be updated.
+      `tr` node and access the `td` cells whose values need to be updated.
+      Only one entry may be edited at a time to prevent broken entry updates.
+
       On edit, the text content is replaced with input fields and on save,
-      the input fields are replaced with updated text values.
-           
-      The cells' original values are fed back into the input fields
-      for quick editing.
+      the input fields are replaced with updated text values. The cells'
+      original values are fed back into the input fields for quick editing.
     */
 
-    if (!isEditTransaction) {
+    if (!isEditTransaction.status && isEditTransaction.entryId === null) {
       // In edit mode => change text to inputs
       const [dateCell, typeCell, descriptionCell, amountCell] =
         e.target.closest("tr").children;
@@ -249,7 +251,15 @@ function Spendings() {
 
       amountCell.innerHTML = "";
       amountCell.appendChild(amountInput);
-    } else {
+
+      setIsEditTransaction((prevState) => ({
+        ...prevState,
+        entryId: targetEntryId,
+      }));
+    } else if (
+      isEditTransaction.status &&
+      isEditTransaction.entryId === targetEntryId
+    ) {
       // In save mode => change inputs to text
       const [dateCell, typeCell, descriptionCell, amountCell] =
         e.target.closest("tr").children;
@@ -274,10 +284,18 @@ function Spendings() {
       amountCell.removeChild(amountCell.firstChild);
       amountCell.textContent = transactionAmount;
 
+      setIsEditTransaction((prevState) => ({
+        ...prevState,
+        entryId: null,
+      }));
+
       handleSaveEditedTransaction(targetEntryId, getInputValues(e));
     }
 
-    setIsEditTransaction(!isEditTransaction);
+    setIsEditTransaction((prevState) => ({
+      ...prevState,
+      status: !isEditTransaction.status,
+    }));
   }
 
   function updateButtonText(e, targetEntryId) {
@@ -286,9 +304,12 @@ function Spendings() {
       to "Save" when the current transaction is marked as being edited
       or to "Edit" in other scenarios.
     */
-    if (!isEditTransaction && targetEntryId === idOfEditedTransaction) {
+    if (!isEditTransaction.status && isEditTransaction.entryId === null) {
       e.target.textContent = "Save";
-    } else {
+    } else if (
+      isEditTransaction.status &&
+      isEditTransaction.entryId === targetEntryId
+    ) {
       e.target.textContent = "Edit";
     }
   }
@@ -494,7 +515,6 @@ function Spendings() {
                         onClick={(e) => {
                           const targetClass = e.target.closest("tr").className;
                           const targetEntryId = targetClass.split("t")[1];
-                          idOfEditedTransaction = targetEntryId;
                           handleEditTransaction(e, targetEntryId);
                           updateButtonText(e, targetEntryId);
                         }}

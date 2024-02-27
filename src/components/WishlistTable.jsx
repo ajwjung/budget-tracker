@@ -10,12 +10,14 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
     handleSaveEditedItem,
     handleDeleteItem,
   } = useContext(WishlistContext);
-  const [isEdit, setIsEdit] = useState(false);
+  const [isEdit, setIsEdit] = useState({
+    status: false,
+    entryId: null,
+  });
   const [itemInput, setItemInput] = useState({
     item: "",
     price: "",
   });
-  let idOfEditedItem;
 
   function handleInputChange(field, value) {
     if (field === "item") {
@@ -50,16 +52,15 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
 
   function handleEditRow(e, targetEntryId) {
     /*
-      The function takes the target button node and uses its parent
-      "tr" node to:
-        1) Replace the "Item" and "Price" cells with input fields on edit, or
-        2) Replace the "Item" and "Price" inputs with updated text on save
-           
-      The cells' original values are fed back into the input fields
-      for quick editing.
-    */
+      The function takes the target button node to target the parent
+      `tr` node and access the `td` cells whose values need to be updated.
+      Only one entry may be edited at a time to prevent broken entry updates.
 
-    if (!isEdit) {
+      On edit, the text content is replaced with input fields and on save,
+      the input fields are replaced with updated text values. The cells'
+      original values are fed back into the input fields for quick editing.
+    */
+    if (!isEdit.status && isEdit.entryId === null) {
       // In edit mode => change text to inputs
       const itemNameCell = e.target.closest("tr").children.item(1);
       const itemName = itemNameCell.textContent;
@@ -89,7 +90,12 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
 
       itemPriceCell.innerHTML = "";
       itemPriceCell.appendChild(itemPriceInput);
-    } else {
+
+      setIsEdit((prevState) => ({
+        ...prevState,
+        entryId: targetEntryId,
+      }));
+    } else if (isEdit.status && isEdit.entryId === targetEntryId) {
       // In save mode => change inputs to text
       const itemNameCell = e.target.closest("tr").children.item(1);
       const itemNameValue = itemNameCell.firstChild.value;
@@ -102,21 +108,29 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
       itemPriceCell.removeChild(itemPriceCell.firstChild);
       itemPriceCell.textContent = `$${priceValue}`;
 
+      setIsEdit((prevState) => ({
+        ...prevState,
+        entryId: null,
+      }));
+
       handleSaveEditedItem(targetEntryId, getInputValues(e));
     }
 
-    setIsEdit(!isEdit);
+    setIsEdit((prevState) => ({
+      ...prevState,
+      status: !isEdit.status,
+    }));
   }
 
   function updateButtonText(e, targetEntryId) {
     /*
       The function takes the button node and updates its text content
-      to "Save" when the current wishlist item is marked as being edited
+      to "Save" when the current wishlist item is marked as being edited,
       or to "Edit" in other scenarios.
     */
-    if (!isEdit && targetEntryId === idOfEditedItem) {
+    if (!isEdit.status && isEdit.entryId === null) {
       e.target.textContent = "Save";
-    } else {
+    } else if (isEdit.status && isEdit.entryId === targetEntryId) {
       e.target.textContent = "Edit";
     }
   }
@@ -167,7 +181,6 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
                   onClick={(e) => {
                     const targetClass = e.target.closest("tr").className;
                     const targetEntryId = targetClass.split("item")[1];
-                    idOfEditedItem = targetEntryId;
                     handleEditRow(e, targetEntryId);
                     updateButtonText(e, targetEntryId);
                   }}

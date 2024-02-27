@@ -11,13 +11,15 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
     handleDeleteCategory,
   } = useContext(WishlistContext);
   const [isEditBalance, setIsEditBalance] = useState(false);
-  const [isEditCategory, setIsEditCategory] = useState(false);
+  const [isEditCategory, setIsEditCategory] = useState({
+    status: false,
+    entryId: null,
+  });
   const [updatedStartBalance, setUpdatedStartBalance] = useState(0);
   const [categoryInput, setCategoryInput] = useState({
     category: "",
     balance: "",
   });
-  let idOfEditedCategory;
 
   function formatRemainingBalance() {
     /*
@@ -100,15 +102,15 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
 
   function handleEditCategory(e, targetEntryId) {
     /*
-      The function takes the target button node and uses its parent
-      "tr" node to:
-        1) Replace the "Category" and "Balance" cells with input fields on edit, or
-        2) Replace the "Category" and "Balance" inputs with updated text on save
-           
-      The cells' original values are fed back into the input fields
-      for quick editing.
+      The function takes the target button node to target the parent
+      `tr` node and access the `td` cells whose values need to be updated.
+      Only one entry may be edited at a time to prevent broken entry updates.
+
+      On edit, the text content is replaced with input fields and on save,
+      the input fields are replaced with updated text values. The cells'
+      original values are fed back into the input fields for quick editing.
     */
-    if (!isEditCategory) {
+    if (!isEditCategory.status && isEditCategory.entryId === null) {
       const categoryCell = e.target.closest("tr").children[0];
       const categoryName = categoryCell.textContent;
       const balanceCell = categoryCell.nextSibling;
@@ -136,7 +138,15 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
       categoryCell.appendChild(categoryInput);
       balanceCell.innerHTML = "";
       balanceCell.appendChild(balanceInput);
-    } else {
+
+      setIsEditCategory((prevState) => ({
+        ...prevState,
+        entryId: targetEntryId,
+      }));
+    } else if (
+      isEditCategory.status &&
+      isEditCategory.entryId === targetEntryId
+    ) {
       const categoryCell = e.target.closest("tr").children[0];
       const categoryName = categoryCell.firstChild.value;
       const balanceCell = categoryCell.nextSibling;
@@ -148,21 +158,32 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
       balanceCell.removeChild(balanceCell.firstChild);
       balanceCell.textContent = `$${balanceAmount}`;
 
+      setIsEditCategory((prevState) => ({
+        ...prevState,
+        entryId: null,
+      }));
+
       handleSaveEditedCategory(targetEntryId, getInputValues(e));
     }
 
-    setIsEditCategory(!isEditCategory);
+    setIsEditCategory((prevState) => ({
+      ...prevState,
+      status: !isEditCategory.status,
+    }));
   }
 
   function updateButtonText(e, targetEntryId) {
     /*
       The function takes the button node and updates its text content
-      to "Save" when the current category is marked as being edited
+      to "Save" when the current category is marked as being edited,
       or to "Edit" in other scenarios.
     */
-    if (!isEditCategory && targetEntryId === idOfEditedCategory) {
+    if (!isEditCategory.status && isEditCategory.entryId === null) {
       e.target.textContent = "Save";
-    } else {
+    } else if (
+      isEditCategory.status &&
+      isEditCategory.entryId === targetEntryId
+    ) {
       e.target.textContent = "Edit";
     }
   }
@@ -202,7 +223,6 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
                   onClick={(e) => {
                     const targetClass = e.target.closest("tr").classList[0];
                     const targetEntryId = parseInt(targetClass.split("cat")[1]);
-                    idOfEditedCategory = targetEntryId;
                     handleEditCategory(e, targetEntryId);
                     updateButtonText(e, targetEntryId);
                   }}
