@@ -42,7 +42,7 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
     */
     if (!isEditBalance) {
       const balanceCell = e.target.closest("tr").children[1];
-      const currentAmount = parseFloat(balanceCell.textContent.split("$")[1]);
+      const currentAmount = parseFloat(balanceCell.textContent);
 
       const balanceInput = document.createElement("input");
       balanceInput.setAttribute("type", "number");
@@ -61,7 +61,7 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
       const balanceAmount = balanceCell.firstChild.value;
 
       balanceCell.removeChild(balanceCell.firstChild);
-      balanceCell.textContent = `$${balanceAmount}`;
+      balanceCell.textContent = balanceAmount;
 
       handleUpdateStartBalance(balanceAmount);
     }
@@ -95,7 +95,7 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
     const balanceCell = categoryCell.nextElementSibling;
 
     const categoryName = categoryCell.textContent;
-    const balanceAmount = parseFloat(balanceCell.textContent.split("$")[1]);
+    const balanceAmount = parseFloat(balanceCell.textContent);
 
     return { categoryName, balanceAmount };
   }
@@ -114,7 +114,7 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
       const categoryCell = e.target.closest("tr").children[0];
       const categoryName = categoryCell.textContent;
       const balanceCell = categoryCell.nextSibling;
-      const balanceAmount = parseFloat(balanceCell.textContent.split("$")[1]);
+      const balanceAmount = Math.abs(parseFloat(balanceCell.textContent));
 
       const categoryInput = document.createElement("input");
       categoryInput.setAttribute("type", "textbox");
@@ -156,7 +156,7 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
       categoryCell.textContent = categoryName;
 
       balanceCell.removeChild(balanceCell.firstChild);
-      balanceCell.textContent = `$${balanceAmount}`;
+      balanceCell.textContent = balanceAmount;
 
       setIsEditCategory((prevState) => ({
         ...prevState,
@@ -193,14 +193,14 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
       <thead>
         <tr>
           <th>Category</th>
-          <th>Balance</th>
+          <th>Balance ($)</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>Current Balance*</td>
-          <td>{`$${startingBalance}`}</td>
+          <td>{startingBalance.toFixed(2)}</td>
           <td>
             <button
               onClick={(e) => {
@@ -217,7 +217,7 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
           return (
             <tr key={`b${category.id}`} className={`cat${category.id}`}>
               <td>{category.category}</td>
-              <td>{`$${category.balance}`}</td>
+              <td>{`-${category.balance.toFixed(2)}`}</td>
               <td>
                 <button
                   onClick={(e) => {
@@ -248,7 +248,11 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
         })}
         <tr>
           <td>Wishlist Expenses*</td>
-          <td>{`$${calculateSelectedTotal()}`}</td>
+          <td>
+            {calculateSelectedTotal() > 0
+              ? `-${calculateSelectedTotal()}`
+              : calculateSelectedTotal()}
+          </td>
           <td></td>
         </tr>
       </tbody>

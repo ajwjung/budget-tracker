@@ -71,7 +71,7 @@ describe("Wishlist Component", () => {
 
     const wishlistTable = screen.getAllByRole("table")[0];
     const wishlistHeaders = screen.getByRole("row", {
-      name: "Select Item Price Link to Item Action",
+      name: "Select Item Price ($) Link to Item Action",
     });
 
     expect(wishlistTable).toBeInTheDocument();
@@ -139,7 +139,7 @@ describe("Wishlist Component", () => {
 
     const budgetTable = screen.getAllByRole("table")[1];
     const budgetHeaders = screen.getByRole("row", {
-      name: "Category Balance Action",
+      name: "Category Balance ($) Action",
     });
 
     expect(budgetTable).toBeInTheDocument();

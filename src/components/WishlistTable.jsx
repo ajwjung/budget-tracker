@@ -52,7 +52,7 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
     const itemLinkCell = itemPriceCell.nextElementSibling;
 
     const itemName = itemNameCell.textContent;
-    const priceValue = parseFloat(itemPriceCell.textContent.split("$")[1]);
+    const priceValue = parseFloat(itemPriceCell.textContent);
     const itemLink = itemLinkCell.textContent;
 
     return { itemName, priceValue, itemLink };
@@ -73,7 +73,7 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
       const itemNameCell = e.target.closest("tr").children.item(1);
       const itemName = itemNameCell.textContent;
       const itemPriceCell = itemNameCell.nextElementSibling;
-      const priceValue = parseFloat(itemPriceCell.textContent.split("$")[1]);
+      const priceValue = parseFloat(itemPriceCell.textContent);
       const itemLinkCell = itemPriceCell.nextElementSibling;
       const itemLink = itemLinkCell.textContent;
 
@@ -129,7 +129,7 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
       itemNameCell.textContent = itemNameValue;
 
       itemPriceCell.removeChild(itemPriceCell.firstChild);
-      itemPriceCell.textContent = `$${priceValue}`;
+      itemPriceCell.textContent = priceValue;
 
       if (
         itemLinkValue.startsWith("http://") ||
@@ -181,7 +181,7 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
         <tr>
           <th>Select</th>
           <th>Item</th>
-          <th>Price</th>
+          <th>Price ($)</th>
           <th>Link to Item</th>
           <th>Action</th>
         </tr>
@@ -216,7 +216,7 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
                 )}
               </td>
               <td>{item.item}</td>
-              <td>{`$${item.price}`}</td>
+              <td>{item.price.toFixed(2)}</td>
               <td>
                 <a
                   href={item.link}

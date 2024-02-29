@@ -37,7 +37,7 @@ describe("BudgetTable component", () => {
 
     const table = screen.getByRole("table");
     const tableHeaders = screen.getByRole("row", {
-      name: "Category Balance Action",
+      name: "Category Balance ($) Action",
     });
 
     expect(table).toBeInTheDocument();
@@ -94,7 +94,7 @@ describe("BudgetTable component", () => {
 
     const table = screen.getByRole("table");
     const wishlistExpense = screen.getByRole("row", {
-      name: "Wishlist Expenses* $38.77",
+      name: "Wishlist Expenses* -38.77",
     });
 
     expect(table).toBeInTheDocument();
