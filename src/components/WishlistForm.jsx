@@ -154,7 +154,6 @@ function WishlistForm({ headerText }) {
             </label>
             <input
               type="url"
-              pattern="https?://.*"
               name={formDetails.linkInputName}
               id={formDetails.linkInputId}
               className="form-control"

@@ -97,7 +97,6 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
 
       const itemLinkInput = document.createElement("input");
       itemLinkInput.setAttribute("type", "url");
-      itemLinkInput.setAttribute("pattern", `https\?://\.\*`);
       itemLinkInput.classList.add("form-control");
       itemLinkInput.value = itemLink;
       itemLinkInput.addEventListener("change", (e) => {
@@ -132,13 +131,22 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
       itemPriceCell.removeChild(itemPriceCell.firstChild);
       itemPriceCell.textContent = `$${priceValue}`;
 
-      const itemLinkAnchor = document.createElement("a");
-      itemLinkAnchor.setAttribute("href", itemLinkValue);
-      itemLinkAnchor.setAttribute("target", "_blank");
-      itemLinkAnchor.textContent = itemLinkValue;
+      if (
+        itemLinkValue.startsWith("http://") ||
+        itemLinkValue.startsWith("https://")
+      ) {
+        const itemLinkAnchor = document.createElement("a");
+        itemLinkAnchor.setAttribute("href", itemLinkValue);
+        itemLinkAnchor.setAttribute("target", "_blank");
+        itemLinkAnchor.setAttribute("title", "Link opens in a new tab");
+        itemLinkAnchor.textContent = itemLinkValue;
 
-      itemLinkCell.removeChild(itemLinkCell.firstChild);
-      itemLinkCell.appendChild(itemLinkAnchor);
+        itemLinkCell.removeChild(itemLinkCell.firstChild);
+        itemLinkCell.appendChild(itemLinkAnchor);
+      } else {
+        itemLinkCell.removeChild(itemLinkCell.firstChild);
+        itemLinkCell.textContent = itemLinkValue;
+      }
 
       setIsEdit((prevState) => ({
         ...prevState,
@@ -210,7 +218,11 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
               <td>{item.item}</td>
               <td>{`$${item.price}`}</td>
               <td>
-                <a href={item.link} target="_blank">
+                <a
+                  href={item.link}
+                  target="_blank"
+                  title="Link opens in a new tab"
+                >
                   {item.link}
                 </a>
               </td>
