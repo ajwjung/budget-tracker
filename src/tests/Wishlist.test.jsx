@@ -13,16 +13,19 @@ describe("Wishlist Component", () => {
       id: 0,
       item: "Sweater",
       price: 38.99,
+      link: "",
     },
     {
       id: 1,
       item: "Action Figure",
       price: 95.99,
+      link: "https://www.google.com/",
     },
     {
       id: 2,
       item: "Tumbler",
       price: 24.99,
+      link: "",
     },
   ];
   const FAKE_CATEGORIES = [
@@ -68,7 +71,7 @@ describe("Wishlist Component", () => {
 
     const wishlistTable = screen.getAllByRole("table")[0];
     const wishlistHeaders = screen.getByRole("row", {
-      name: "Select Item Price Action",
+      name: "Select Item Price Link to Item Action",
     });
 
     expect(wishlistTable).toBeInTheDocument();

@@ -17,6 +17,7 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
   const [itemInput, setItemInput] = useState({
     item: "",
     price: "",
+    link: "",
   });
 
   function handleInputChange(field, value) {
@@ -30,24 +31,31 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
         ...itemInput,
         price: parseFloat(value),
       });
+    } else if (field === "link") {
+      setItemInput({
+        ...itemInput,
+        link: value,
+      });
     }
   }
 
   function getInputValues(e) {
     /*
       The function takes the target button node and uses its parent
-      "tr" node to get the item name and item price cells' values.
-      This alternative is used because states are asynchronous
-      and we cannot use the updated object immediately.
+      "tr" node to get the item name, item price, and item link
+      cells' values. This alternative is used because states are
+      asynchronous and we cannot use the updated object immediately.
     */
 
     const itemNameCell = e.target.closest("tr").children.item(1);
     const itemPriceCell = itemNameCell.nextElementSibling;
+    const itemLinkCell = itemPriceCell.nextElementSibling;
 
     const itemName = itemNameCell.textContent;
     const priceValue = parseFloat(itemPriceCell.textContent.split("$")[1]);
+    const itemLink = itemLinkCell.textContent;
 
-    return { itemName, priceValue };
+    return { itemName, priceValue, itemLink };
   }
 
   function handleEditRow(e, targetEntryId) {
@@ -66,6 +74,8 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
       const itemName = itemNameCell.textContent;
       const itemPriceCell = itemNameCell.nextElementSibling;
       const priceValue = parseFloat(itemPriceCell.textContent.split("$")[1]);
+      const itemLinkCell = itemPriceCell.nextElementSibling;
+      const itemLink = itemLinkCell.textContent;
 
       const itemNameInput = document.createElement("input");
       itemNameInput.setAttribute("type", "textbox");
@@ -85,11 +95,23 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
         handleInputChange("price", e.target.value);
       });
 
+      const itemLinkInput = document.createElement("input");
+      itemLinkInput.setAttribute("type", "url");
+      itemLinkInput.setAttribute("pattern", `https\?://\.\*`);
+      itemLinkInput.classList.add("form-control");
+      itemLinkInput.value = itemLink;
+      itemLinkInput.addEventListener("change", (e) => {
+        handleInputChange("link", e.target.value);
+      });
+
       itemNameCell.innerHTML = "";
       itemNameCell.appendChild(itemNameInput);
 
       itemPriceCell.innerHTML = "";
       itemPriceCell.appendChild(itemPriceInput);
+
+      itemLinkCell.innerHTML = "";
+      itemLinkCell.appendChild(itemLinkInput);
 
       setIsEdit((prevState) => ({
         ...prevState,
@@ -101,12 +123,22 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
       const itemNameValue = itemNameCell.firstChild.value;
       const itemPriceCell = itemNameCell.nextElementSibling;
       const priceValue = itemPriceCell.firstChild.value;
+      const itemLinkCell = itemPriceCell.nextElementSibling;
+      const itemLinkValue = itemLinkCell.firstChild.value;
 
       itemNameCell.removeChild(itemNameCell.firstChild);
       itemNameCell.textContent = itemNameValue;
 
       itemPriceCell.removeChild(itemPriceCell.firstChild);
       itemPriceCell.textContent = `$${priceValue}`;
+
+      const itemLinkAnchor = document.createElement("a");
+      itemLinkAnchor.setAttribute("href", itemLinkValue);
+      itemLinkAnchor.setAttribute("target", "_blank");
+      itemLinkAnchor.textContent = itemLinkValue;
+
+      itemLinkCell.removeChild(itemLinkCell.firstChild);
+      itemLinkCell.appendChild(itemLinkAnchor);
 
       setIsEdit((prevState) => ({
         ...prevState,
@@ -142,6 +174,7 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
           <th>Select</th>
           <th>Item</th>
           <th>Price</th>
+          <th>Link to Item</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -176,6 +209,11 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
               </td>
               <td>{item.item}</td>
               <td>{`$${item.price}`}</td>
+              <td>
+                <a href={item.link} target="_blank">
+                  {item.link}
+                </a>
+              </td>
               <td>
                 <button
                   onClick={(e) => {

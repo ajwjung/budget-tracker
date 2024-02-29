@@ -9,6 +9,7 @@ function WishlistForm({ headerText }) {
   const [itemInfo, setItemInfo] = useState({
     item: "",
     price: "",
+    link: "",
   });
   const [categoryInfo, setCategoryInfo] = useState({
     category: "",
@@ -25,6 +26,10 @@ function WishlistForm({ headerText }) {
     formDetails["priceLabelFor"] = "price";
     formDetails["priceInputName"] = "price";
     formDetails["priceInputId"] = "price";
+    formDetails["linkLabelFor"] = "item-link";
+    formDetails["linkLabelText"] = "Link to Item";
+    formDetails["linkInputName"] = "itemLink";
+    formDetails["linkInputId"] = "item-link";
   } else if (headerText === "category") {
     formDetails["formId"] = "budget-form";
     formDetails["itemLabelFor"] = "category";
@@ -50,6 +55,13 @@ function WishlistForm({ headerText }) {
     });
   }
 
+  function handleItemLinkChange(e) {
+    setItemInfo({
+      ...itemInfo,
+      link: e.target.value,
+    });
+  }
+
   function handleCategoryChange(e) {
     setCategoryInfo({
       ...categoryInfo,
@@ -71,6 +83,7 @@ function WishlistForm({ headerText }) {
     setItemInfo({
       item: "",
       price: "",
+      link: "",
     });
     setCategoryInfo({
       category: "",
@@ -131,6 +144,27 @@ function WishlistForm({ headerText }) {
           }}
           required={true}
         />
+        {headerText === "wishlist item" && (
+          <>
+            <label
+              htmlFor={formDetails.linkLabelFor}
+              className="input-group-text"
+            >
+              {formDetails.linkLabelText}
+            </label>
+            <input
+              type="url"
+              pattern="https?://.*"
+              name={formDetails.linkInputName}
+              id={formDetails.linkInputId}
+              className="form-control"
+              value={itemInfo.link}
+              onChange={(e) => {
+                handleItemLinkChange(e);
+              }}
+            />
+          </>
+        )}
         <button type="submit" className="btn btn-outline-primary">
           Add
         </button>

@@ -45,6 +45,7 @@ function App() {
       id: 0,
       item: "SAMPLE",
       price: 999,
+      link: "https://www.dummylink.com/",
     },
   ]);
   const [categories, setCategories] = useState([
@@ -87,7 +88,8 @@ function App() {
     if (
       wishlistItems[0] &&
       wishlistItems[0].item === "SAMPLE" &&
-      wishlistItems[0].price === 999
+      wishlistItems[0].price === 999 &&
+      wishlistItems[0].link === "https://www.dummylink.com/"
     ) {
       const updatedItems = wishlistItems.map((item) => {
         if (item.id === 0) {
@@ -95,6 +97,7 @@ function App() {
             id: item.id,
             item: itemInfo.item,
             price: parseFloat(itemInfo.price),
+            link: itemInfo.link,
           };
         } else {
           return item;
@@ -112,6 +115,7 @@ function App() {
             : wishlistItems.length + 1,
           item: itemInfo.item,
           price: parseFloat(itemInfo.price),
+          link: itemInfo.link,
         },
       ]);
     }
@@ -196,6 +200,7 @@ function App() {
           ...item,
           item: inputValues.itemName,
           price: parseFloat(inputValues.priceValue),
+          link: inputValues.itemLink,
         };
       } else {
         return item;

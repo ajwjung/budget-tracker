@@ -8,21 +8,24 @@ describe("WishlistTable component", () => {
       id: 0,
       item: "Sweater",
       price: 38.99,
+      link: "",
     },
     {
       id: 1,
       item: "Action Figure",
       price: 95.99,
+      link: "https://www.google.com/",
     },
     {
       id: 2,
       item: "Tumbler",
       price: 24.99,
+      link: "",
     },
   ];
   const SELECTED_IDS = [1, 2];
 
-  it("renders a table with four columns: Select, Item, Price, and Action", () => {
+  it("renders a table with four columns: Select, Item, Price, Link to Item, and Action", () => {
     const calculateSelectedTotal = vi.fn(() => 102.98);
     const calculateTotal = vi.fn((formType) => {
       return formType === "wishlist" ? 148.97 : 888.88;
@@ -44,7 +47,7 @@ describe("WishlistTable component", () => {
 
     const table = screen.getByRole("table");
     const tableHeaders = screen.getByRole("row", {
-      name: "Select Item Price Action",
+      name: "Select Item Price Link to Item Action",
     });
 
     expect(table).toBeInTheDocument();
@@ -97,7 +100,7 @@ describe("WishlistTable component", () => {
     );
 
     const wishlistItem = screen.getByRole("row", {
-      name: "Action Figure $95.99 Edit Delete",
+      name: "Action Figure $95.99 https://www.google.com/ Edit Delete",
     });
 
     expect(wishlistItem).toBeInTheDocument();

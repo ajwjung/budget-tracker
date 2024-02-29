@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import { expect, vi } from "vitest";
 import Calculate from "../scripts/Calculate";
 import Header from "../components/Header";
-import App from "../App";
+import Dashboard from "../components/Dashboard";
 import Spendings from "../components/Spendings";
 import Wishlist from "../components/Wishlist";
 import { WishlistContext } from "../App";
@@ -60,9 +60,9 @@ vi.mock("../components/Spendings.jsx", () => ({
               </tr>
             </thead>
             <tbody>
-              {sortedTransactions.map((transaction) => {
+              {sortedTransactions.map((transaction, index) => {
                 return (
-                  <tr>
+                  <tr key={`fake${index}`}>
                     <td>{transaction.date}</td>
                     <td>{transaction.transactionCategory}</td>
                     <td>{transaction.description}</td>
@@ -90,7 +90,7 @@ describe("Spendings Component", () => {
   it("renders a form to enter an expense", () => {
     const router = createMemoryRouter(
       [
-        { path: "/", element: <App /> },
+        { path: "/", element: <Dashboard /> },
         { path: "/transactions", element: <Spendings /> },
         { path: "/wishlist", element: <Wishlist /> },
       ],
@@ -124,7 +124,7 @@ describe("Spendings Component", () => {
   it("renders a form to enter a deposit", () => {
     const router = createMemoryRouter(
       [
-        { path: "/", element: <App /> },
+        { path: "/", element: <Dashboard /> },
         { path: "/transactions", element: <Spendings /> },
         { path: "/wishlist", element: <Wishlist /> },
       ],
@@ -150,7 +150,7 @@ describe("Spendings Component", () => {
   it("renders a table displaying past transactions", () => {
     const router = createMemoryRouter(
       [
-        { path: "/", element: <App /> },
+        { path: "/", element: <Dashboard /> },
         { path: "/transactions", element: <Spendings /> },
         { path: "/wishlist", element: <Wishlist /> },
       ],
@@ -189,7 +189,7 @@ describe("Spendings Component", () => {
 
     const router = createMemoryRouter(
       [
-        { path: "/", element: <App /> },
+        { path: "/", element: <Dashboard /> },
         { path: "/transactions", element: <Spendings /> },
         { path: "/wishlist", element: <Wishlist /> },
       ],
