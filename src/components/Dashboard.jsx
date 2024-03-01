@@ -131,21 +131,17 @@ function Dashboard() {
     {
       id: "doughnutText",
       beforeDraw: function (chart) {
-        const { ctx, data } = chart;
+        const { ctx } = chart;
 
         ctx.save();
 
         const xCoor = chart.getDatasetMeta(0).data[0].x;
         const yCoor = chart.getDatasetMeta(0).data[0].y;
-        ctx.font = "bold sans-serif";
+        ctx.font = "1.5rem sans-serif";
         ctx.fillStyle = "steelblue";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(
-          `${data.labels[0]}: ${data.datasets[0].data[0]}`,
-          xCoor,
-          yCoor
-        );
+        ctx.fillText(`$${calculateTotalSpent()}`, xCoor, yCoor);
       },
     },
   ];
@@ -170,9 +166,13 @@ function Dashboard() {
                 <div className="card-body">
                   <h3>Overview</h3>
                   <hr />
-                  <ul>
-                    <li>Spent: {formatAmount(spentAmount)}</li>
-                    <li>Balance: {formatAmount(remainingBalance)}</li>
+                  <ul className="list-group list-group-flush">
+                    <li className="list-group-item">
+                      Total Spent: {formatAmount(spentAmount)}
+                    </li>
+                    <li className="list-group-item">
+                      Remaining Balance: {formatAmount(remainingBalance)}
+                    </li>
                   </ul>
                 </div>
               </div>
