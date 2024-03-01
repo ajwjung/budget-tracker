@@ -2,7 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Spendings from "./components/Spendings.jsx";
 import Wishlist from "./components/Wishlist.jsx";
 import Dashboard from "./components/Dashboard.jsx";
-import { useState, createContext } from "react";
+import { useState, useEffect, createContext } from "react";
 
 export const WishlistContext = createContext({
   wishlistItems: [],
@@ -40,21 +40,29 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  const [wishlistItems, setWishlistItems] = useState([
-    {
-      id: 0,
-      item: "SAMPLE",
-      price: 999,
-      link: "https://www.dummylink.com/",
-    },
-  ]);
-  const [categories, setCategories] = useState([
-    {
-      id: 0,
-      category: "SAMPLE",
-      balance: 999,
-    },
-  ]);
+  const [wishlistItems, setWishlistItems] = useState(
+    localStorage.getItem("wishlist")
+      ? JSON.parse(localStorage.getItem("wishlist"))
+      : [
+          {
+            id: 0,
+            item: "SAMPLE",
+            price: 999,
+            link: "https://www.dummylink.com/",
+          },
+        ]
+  );
+  const [categories, setCategories] = useState(
+    localStorage.getItem("categories")
+      ? JSON.parse(localStorage.getItem("categories"))
+      : [
+          {
+            id: 0,
+            category: "SAMPLE",
+            balance: 999,
+          },
+        ]
+  );
   const expenseCategories = [
     "Bills/Utilities",
     "Entertainment",
@@ -64,17 +72,49 @@ function App() {
     "Shopping",
     "Other",
   ];
-  const [startingBalance, setStartingBalance] = useState(0);
-  const [idsOfSelectedItems, setIdsOfSelectedItems] = useState([]);
-  const [transactions, setTransactions] = useState([
-    {
-      id: 0,
-      date: "2024-01-01",
-      transactionCategory: "Food/Drinks",
-      description: "FAKE BURGER",
-      amount: -19.99,
-    },
-  ]);
+  const [startingBalance, setStartingBalance] = useState(
+    localStorage.getItem("startingBalance")
+      ? JSON.parse(localStorage.getItem("startingBalance"))
+      : 0
+  );
+  const [idsOfSelectedItems, setIdsOfSelectedItems] = useState(
+    localStorage.getItem("selectedIds")
+      ? JSON.parse(localStorage.getItem("selectedIds"))
+      : []
+  );
+  const [transactions, setTransactions] = useState(
+    localStorage.getItem("transactions")
+      ? JSON.parse(localStorage.getItem("transactions"))
+      : [
+          {
+            id: 0,
+            date: "2024-01-01",
+            transactionCategory: "Food/Drinks",
+            description: "FAKE BURGER",
+            amount: -19.99,
+          },
+        ]
+  );
+
+  useEffect(() => {
+    localStorage.setItem("wishlist", JSON.stringify(wishlistItems));
+  }, [wishlistItems]);
+
+  useEffect(() => {
+    localStorage.setItem("categories", JSON.stringify(categories));
+  }, [categories]);
+
+  useEffect(() => {
+    localStorage.setItem("startingBalance", JSON.stringify(startingBalance));
+  }, [startingBalance]);
+
+  useEffect(() => {
+    localStorage.setItem("selectedIds", JSON.stringify(idsOfSelectedItems));
+  }, [idsOfSelectedItems]);
+
+  useEffect(() => {
+    localStorage.setItem("transactions", JSON.stringify(transactions));
+  }, [transactions]);
 
   function handleAddNewItem(itemInfo) {
     /*
