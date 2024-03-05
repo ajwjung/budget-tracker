@@ -2,7 +2,7 @@ import { RouterProvider, createMemoryRouter } from "react-router-dom";
 import { render, screen } from "@testing-library/react";
 import Dashboard from "../components/Dashboard";
 import Spendings from "../components/Spendings";
-import Wishlist from "../components/Wishlist";
+import Wishlist from "../components/WishlistTracker/Wishlist";
 
 describe("Dashboard component", () => {
   it("renders a canvas chart", () => {
@@ -27,7 +27,7 @@ describe("Dashboard component", () => {
 
     render(<RouterProvider router={router} />);
 
-    const overviewCard = screen.getByRole("heading", { name: "Overview" });
+    const overviewCard = screen.getByText("Overview");
     expect(overviewCard).toBeInTheDocument();
   });
 
@@ -40,9 +40,7 @@ describe("Dashboard component", () => {
 
     render(<RouterProvider router={router} />);
 
-    const recentTransactions = screen.getByRole("heading", {
-      name: "Recent Transactions",
-    });
+    const recentTransactions = screen.getByText("Recent Transactions");
     expect(recentTransactions).toBeInTheDocument();
   });
 });

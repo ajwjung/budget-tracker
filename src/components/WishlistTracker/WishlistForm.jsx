@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { useContext, useState } from "react";
-import { WishlistContext } from "../App";
+import { WishlistContext } from "../../App";
+import { Button, Form, InputGroup } from "react-bootstrap";
 
 function WishlistForm({ headerText }) {
   const { handleAddNewItem, handleAddNewCategory } =
@@ -92,7 +93,7 @@ function WishlistForm({ headerText }) {
   }
 
   return (
-    <form
+    <Form
       onSubmit={(e) => {
         e.preventDefault();
         handleOnSubmit();
@@ -101,15 +102,14 @@ function WishlistForm({ headerText }) {
       id={formDetails.formId}
     >
       <h3 className="fs-4">Add a new {headerText}:</h3>
-      <div className="input-group mb-3">
-        <label htmlFor={formDetails.itemLabelFor} className="input-group-text">
+      <InputGroup className="mb-3">
+        <InputGroup.Text id={formDetails.itemLabelFor}>
           {formDetails.itemLabelText}
-        </label>
-        <input
+        </InputGroup.Text>
+        <Form.Control
           type="text"
           name={formDetails.itemInputName}
-          id={formDetails.itemInputId}
-          className="form-control"
+          aria-describedby={formDetails.itemInputId}
           value={
             headerText === "wishlist item"
               ? itemInfo.item
@@ -122,16 +122,13 @@ function WishlistForm({ headerText }) {
           }}
           required={true}
         />
-        <label htmlFor={formDetails.priceLabelFor} className="input-group-text">
-          $
-        </label>
-        <input
+        <InputGroup.Text id={formDetails.priceLabelFor}>$</InputGroup.Text>
+        <Form.Control
           type="number"
           min="0.01"
           step="0.01"
           name={formDetails.priceInputName}
-          id={formDetails.priceInputId}
-          className="form-control"
+          aria-describedby={formDetails.priceInputId}
           value={
             headerText === "wishlist item"
               ? itemInfo.price
@@ -144,19 +141,19 @@ function WishlistForm({ headerText }) {
           }}
           required={true}
         />
+        {/* Only create "Link to Item" input field for wishlist form */}
         {headerText === "wishlist item" && (
           <>
-            <label
-              htmlFor={formDetails.linkLabelFor}
+            <InputGroup.Text
+              id={formDetails.linkLabelFor}
               className="input-group-text"
             >
               {formDetails.linkLabelText}
-            </label>
-            <input
+            </InputGroup.Text>
+            <Form.Control
               type="url"
               name={formDetails.linkInputName}
-              id={formDetails.linkInputId}
-              className="form-control"
+              aria-describedby={formDetails.linkInputId}
               value={itemInfo.link}
               onChange={(e) => {
                 handleItemLinkChange(e);
@@ -164,11 +161,11 @@ function WishlistForm({ headerText }) {
             />
           </>
         )}
-        <button type="submit" className="btn btn-outline-primary">
+        <Button type="submit" variant="outline-primary">
           Add
-        </button>
-      </div>
-    </form>
+        </Button>
+      </InputGroup>
+    </Form>
   );
 }
 

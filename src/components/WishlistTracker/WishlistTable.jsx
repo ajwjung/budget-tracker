@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { useState, useContext } from "react";
-import { WishlistContext } from "../App";
+import { WishlistContext } from "../../App";
+import { Button, Form, Table } from "react-bootstrap";
 
 function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
   const {
@@ -176,7 +177,7 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
   }
 
   return (
-    <table className="table table-striped">
+    <Table striped responsive>
       <thead>
         <tr>
           <th>Select</th>
@@ -192,7 +193,7 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
             <tr key={`wl${item.id}`} className={`item${item.id}`}>
               <td>
                 {idsOfSelectedItems.includes(item.id) ? (
-                  <input
+                  <Form.Control
                     checked={true}
                     onChange={(e) => {
                       handleSelectItem(e.target, item.id);
@@ -203,7 +204,7 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
                     className="form-check-input"
                   />
                 ) : (
-                  <input
+                  <Form.Control
                     checked={false}
                     onChange={(e) => {
                       handleSelectItem(e.target, item.id);
@@ -227,7 +228,7 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
                 </a>
               </td>
               <td>
-                <button
+                <Button
                   onClick={(e) => {
                     const targetClass = e.target.closest("tr").className;
                     const targetEntryId = targetClass.split("item")[1];
@@ -235,11 +236,11 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
                     updateButtonText(e, targetEntryId);
                   }}
                   type="button"
-                  className="btn btn-warning"
+                  variant="warning"
                 >
                   Edit
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={(e) => {
                     const targetClass = e.target.closest("tr").className;
                     const targetEntryId = parseInt(
@@ -248,10 +249,10 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
                     handleDeleteItem(targetEntryId);
                   }}
                   type="button"
-                  className="btn btn-danger"
+                  variant="danger"
                 >
                   Delete
-                </button>
+                </Button>
               </td>
             </tr>
           );
@@ -264,6 +265,7 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
           </th>
           <td className="fw-bold">{`$${calculateTotal("wishlist")}`}</td>
           <td></td>
+          <td></td>
         </tr>
         <tr>
           <th colSpan={2} className="text-center">
@@ -271,9 +273,10 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
           </th>
           <td className="fw-bold">{`$${calculateSelectedTotal()}`}</td>
           <td></td>
+          <td></td>
         </tr>
       </tfoot>
-    </table>
+    </Table>
   );
 }
 

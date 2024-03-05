@@ -5,7 +5,7 @@ import Calculate from "../scripts/Calculate";
 import Header from "../components/Header";
 import Dashboard from "../components/Dashboard";
 import Spendings from "../components/Spendings";
-import Wishlist from "../components/Wishlist";
+import Wishlist from "../components/WishlistTracker/Wishlist";
 import { WishlistContext } from "../App";
 import { useContext } from "react";
 

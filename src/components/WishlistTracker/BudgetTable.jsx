@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { useState, useContext } from "react";
-import { WishlistContext } from "../App";
+import { WishlistContext } from "../../App";
+import { Button, Table } from "react-bootstrap";
 
 function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
   const {
@@ -189,7 +190,7 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
   }
 
   return (
-    <table className="table table-striped">
+    <Table striped responsive>
       <thead>
         <tr>
           <th>Category</th>
@@ -202,7 +203,7 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
           <td>Current Balance*</td>
           <td>{startingBalance.toFixed(2)}</td>
           <td>
-            <button
+            <Button
               onClick={(e) => {
                 handleEditBalance(e);
               }}
@@ -210,7 +211,7 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
               className="btn btn-warning"
             >
               {!isEditBalance ? "Edit" : "Save"}
-            </button>
+            </Button>
           </td>
         </tr>
         {categories.map((category) => {
@@ -219,7 +220,7 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
               <td>{category.category}</td>
               <td>{`-${category.balance.toFixed(2)}`}</td>
               <td>
-                <button
+                <Button
                   onClick={(e) => {
                     const targetClass = e.target.closest("tr").classList[0];
                     const targetEntryId = parseInt(targetClass.split("cat")[1]);
@@ -227,21 +228,21 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
                     updateButtonText(e, targetEntryId);
                   }}
                   type="button"
-                  className="btn btn-warning"
+                  variant="warning"
                 >
                   Edit
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={(e) => {
                     const targetClass = e.target.closest("tr").classList[0];
                     const targetEntryId = parseInt(targetClass.split("cat")[1]);
                     handleDeleteCategory(targetEntryId);
                   }}
                   type="button"
-                  className="btn btn-danger"
+                  variant="danger"
                 >
                   Delete
-                </button>
+                </Button>
               </td>
             </tr>
           );
@@ -264,7 +265,7 @@ function BudgetTable({ calculateTotal, calculateSelectedTotal }) {
           </td>
         </tr>
       </tfoot>
-    </table>
+    </Table>
   );
 }
 

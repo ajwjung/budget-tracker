@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Spendings from "./components/Spendings.jsx";
-import Wishlist from "./components/Wishlist.jsx";
+import Wishlist from "./components/WishlistTracker/Wishlist.jsx";
 import Dashboard from "./components/Dashboard.jsx";
 import { useState, useEffect, createContext } from "react";
 

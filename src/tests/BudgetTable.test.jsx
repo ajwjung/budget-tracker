@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { vi } from "vitest";
-import BudgetTable from "../components/BudgetTable";
+import BudgetTable from "../components/WishlistTracker/BudgetTable";
 import { WishlistContext } from "../App";
 
 describe("BudgetTable component", () => {

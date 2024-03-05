@@ -2,6 +2,17 @@ import { useState, useContext } from "react";
 import Header from "./Header";
 import { WishlistContext } from "../App";
 import Calculate from "../scripts/Calculate";
+import {
+  ButtonGroup,
+  Button,
+  Collapse,
+  Container,
+  Form,
+  FloatingLabel,
+  Table,
+  ToggleButtonGroup,
+  ToggleButton,
+} from "react-bootstrap";
 
 function Spendings() {
   const {
@@ -33,6 +44,8 @@ function Spendings() {
     description: "",
     amount: "",
   });
+  const [expenseFormOpen, setExpenseFormOpen] = useState(false);
+  const [depositFormOpen, setDepositFormOpen] = useState(false);
 
   function updateTransactionInput(field, value) {
     /*
@@ -320,176 +333,188 @@ function Spendings() {
     <>
       <Header />
       <main>
-        <div className="container my-5">
-          <p className="d-inline-flex gap-1">
-            <span
-              data-bs-toggle="collapse"
-              data-bs-target=".expenses-container"
+        <Container className="my-5">
+          <ToggleButtonGroup
+            type="checkbox"
+            aria-label="Forms to enter transaction or deposit"
+          >
+            <ToggleButton
+              onClick={() => setExpenseFormOpen(!expenseFormOpen)}
+              aria-controls="expenses"
+              aria-expanded={expenseFormOpen}
+              id="form-check-1"
+              value={1}
+              variant="outline-primary"
             >
-              <button
-                data-bs-toggle="button"
-                className="btn btn-outline-primary"
-                type="button"
+              Enter an Expense
+            </ToggleButton>
+            <ToggleButton
+              onClick={() => setDepositFormOpen(!depositFormOpen)}
+              aria-controls="deposits"
+              aria-expanded={depositFormOpen}
+              id="form-check-2"
+              value={2}
+              variant="outline-primary"
+            >
+              Enter a Deposit
+            </ToggleButton>
+          </ToggleButtonGroup>
+          <Collapse in={expenseFormOpen}>
+            <Container id="expenses">
+              <h2>Enter an Expense:</h2>
+              <Form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSubmit("transactions", transactionInput);
+                }}
+                id="spendings-form"
               >
-                Enter an Expense
-              </button>
-            </span>
-            <span
-              data-bs-toggle="collapse"
-              data-bs-target=".deposits-container"
-            >
-              <button
-                data-bs-toggle="button"
-                className="btn btn-outline-primary"
-                type="button"
+                <Form.Group className="mb-3">
+                  <FloatingLabel
+                    controlId="transaction-date"
+                    label="Transaction Date"
+                  >
+                    <Form.Control
+                      type="date"
+                      name="transactionDate"
+                      value={transactionInput.date}
+                      onChange={(e) => {
+                        updateTransactionInput("date", e.target.value);
+                      }}
+                      required
+                    />
+                  </FloatingLabel>
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <FloatingLabel
+                    controlId="transaction-category"
+                    label="Transaction Type"
+                  >
+                    <Form.Select
+                      name="transactionCategory"
+                      value={transactionInput.transactionCategory}
+                      onChange={(e) => {
+                        updateTransactionInput(
+                          "transaction category",
+                          e.target.value
+                        );
+                      }}
+                      required
+                    >
+                      {expenseCategories.map((option, index) => {
+                        return (
+                          <option value={option} key={`option${index}`}>
+                            {option}
+                          </option>
+                        );
+                      })}
+                    </Form.Select>
+                  </FloatingLabel>
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <FloatingLabel
+                    controlId="transaction-description"
+                    label="Description"
+                  >
+                    <Form.Control
+                      type="text"
+                      name="transactionDescription"
+                      value={transactionInput.description}
+                      onChange={(e) => {
+                        updateTransactionInput("description", e.target.value);
+                      }}
+                    />
+                  </FloatingLabel>
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <FloatingLabel
+                    controlId="transaction-amount"
+                    label="Amount ($)"
+                  >
+                    <Form.Control
+                      type="number"
+                      min="0.01"
+                      step="0.01"
+                      name="transactionAmount"
+                      value={transactionInput.amount}
+                      onChange={(e) => {
+                        updateTransactionInput("amount", e.target.value);
+                      }}
+                      required
+                    />
+                  </FloatingLabel>
+                </Form.Group>
+                <Button variant="primary" type="submit">
+                  Save
+                </Button>
+              </Form>
+            </Container>
+          </Collapse>
+          <Collapse in={depositFormOpen}>
+            <Container id="deposits">
+              <h2>Enter a Deposit:</h2>
+              <Form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSubmit("deposits", depositInput);
+                }}
+                id="deposits-form"
               >
-                Enter a Deposit
-              </button>
-            </span>
-          </p>
-          <div className="expenses-container container collapse">
-            <h2>Enter an Expense:</h2>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSubmit("transactions", transactionInput);
-              }}
-              id="spendings-form"
-            >
-              <div className="form-floating mb-3">
-                <input
-                  className="form-control"
-                  type="date"
-                  name="transactionDate"
-                  id="transaction-date"
-                  value={transactionInput.date}
-                  onChange={(e) => {
-                    updateTransactionInput("date", e.target.value);
-                  }}
-                  required
-                />
-                <label htmlFor="transaction-date">Transaction Date</label>
-              </div>
-              <div className="form-floating mb-3">
-                <select
-                  className="form-select"
-                  name="transactionCategory"
-                  id="transaction-category"
-                  value={transactionInput.transactionCategory}
-                  onChange={(e) => {
-                    updateTransactionInput(
-                      "transaction category",
-                      e.target.value
-                    );
-                  }}
-                  required
-                >
-                  {expenseCategories.map((option, index) => {
-                    return (
-                      <option value={option} key={`option${index}`}>
-                        {option}
-                      </option>
-                    );
-                  })}
-                </select>
-                <label htmlFor="transaction-category">Transaction Type</label>
-              </div>
-              <div className="form-floating mb-3">
-                <input
-                  className="form-control"
-                  type="text"
-                  name="transactionDescription"
-                  id="transaction-description"
-                  value={transactionInput.description}
-                  onChange={(e) => {
-                    updateTransactionInput("description", e.target.value);
-                  }}
-                />
-                <label htmlFor="transaction-description">Description</label>
-              </div>
-              <div className="form-floating mb-3">
-                <input
-                  className="form-control"
-                  type="number"
-                  min="0.01"
-                  step="0.01"
-                  name="transactionAmount"
-                  id="transaction-amount"
-                  value={transactionInput.amount}
-                  onChange={(e) => {
-                    updateTransactionInput("amount", e.target.value);
-                  }}
-                  required
-                />
-                <label htmlFor="transaction-amount">Amount ($)</label>
-              </div>
-              <button className="btn btn-primary" type="submit">
-                Save
-              </button>
-            </form>
-          </div>
-          <div className="deposits-container container collapse">
-            <h2>Enter a Deposit:</h2>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                handleSubmit("deposits", depositInput);
-              }}
-              id="deposits-form"
-            >
-              <div className="form-floating mb-3">
-                <input
-                  className="form-control"
-                  type="date"
-                  name="depositDate"
-                  id="deposit-date"
-                  value={depositInput.date}
-                  onChange={(e) => {
-                    updateDepositInput("date", e.target.value);
-                  }}
-                  required
-                />
-                <label htmlFor="deposit-date">Deposit Date</label>
-              </div>
-              <div className="form-floating mb-3">
-                <input
-                  className="form-control"
-                  type="text"
-                  name="depositDescription"
-                  id="deposit-description"
-                  value={depositInput.description}
-                  onChange={(e) => {
-                    updateDepositInput("description", e.target.value);
-                  }}
-                  required
-                />
-                <label htmlFor="deposit-description">Description</label>
-              </div>
-              <div className="form-floating mb-3">
-                <input
-                  className="form-control"
-                  type="number"
-                  name="incomeAmount"
-                  id="income-amount"
-                  min="0.01"
-                  step="0.01"
-                  value={depositInput.amount}
-                  onChange={(e) => {
-                    updateDepositInput("amount", e.target.value);
-                  }}
-                  required
-                />
-                <label htmlFor="income-amount">Amount ($)</label>
-              </div>
-              <button className="btn btn-primary" type="submit">
-                Save
-              </button>
-            </form>
-          </div>
-        </div>
-        <div className="container my-5">
+                <Form.Group className="mb-3">
+                  <FloatingLabel controlId="deposit-date" label="Deposit Date">
+                    <Form.Control
+                      type="date"
+                      name="depositDate"
+                      value={depositInput.date}
+                      onChange={(e) => {
+                        updateDepositInput("date", e.target.value);
+                      }}
+                      required
+                    />
+                  </FloatingLabel>
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <FloatingLabel
+                    controlId="deposit-description"
+                    label="Description"
+                  >
+                    <Form.Control
+                      type="text"
+                      name="depositDescription"
+                      value={depositInput.description}
+                      onChange={(e) => {
+                        updateDepositInput("description", e.target.value);
+                      }}
+                      required
+                    />
+                  </FloatingLabel>
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <FloatingLabel controlId="income-amount" label="Amount ($)">
+                    <Form.Control
+                      className="form-control"
+                      type="number"
+                      name="incomeAmount"
+                      min="0.01"
+                      step="0.01"
+                      value={depositInput.amount}
+                      onChange={(e) => {
+                        updateDepositInput("amount", e.target.value);
+                      }}
+                      required
+                    />
+                  </FloatingLabel>
+                </Form.Group>
+                <Button variant="primary" type="submit">
+                  Save
+                </Button>
+              </Form>
+            </Container>
+          </Collapse>
+        </Container>
+        <Container className="my-5">
           <h2>Past Transactions</h2>
-          <table className="table table-striped">
+          <Table striped responsive="md">
             <thead>
               <tr>
                 <th>Date</th>
@@ -511,36 +536,42 @@ function Spendings() {
                     <td>{transaction.description}</td>
                     <td>{transaction.amount}</td>
                     <td>
-                      <button
-                        onClick={(e) => {
-                          const targetClass = e.target.closest("tr").className;
-                          const targetEntryId = targetClass.split("t")[1];
-                          handleEditTransaction(e, targetEntryId);
-                          updateButtonText(e, targetEntryId);
-                        }}
-                        className="btn btn-warning"
-                        type="button"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          const targetClass = e.target.closest("tr").className;
-                          const targetEntryId = targetClass.split("t")[1];
-                          handleDeleteTransaction(targetEntryId);
-                        }}
-                        className="btn btn-danger"
-                        type="button"
-                      >
-                        Delete
-                      </button>
+                      <ButtonGroup>
+                        <Button
+                          onClick={(e) => {
+                            const targetClass =
+                              e.target.closest("tr").className;
+                            const targetEntryId = targetClass.split("t")[1];
+                            handleEditTransaction(e, targetEntryId);
+                            updateButtonText(e, targetEntryId);
+                          }}
+                          variant="warning"
+                          type="button"
+                          as="button"
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          onClick={(e) => {
+                            const targetClass =
+                              e.target.closest("tr").className;
+                            const targetEntryId = targetClass.split("t")[1];
+                            handleDeleteTransaction(targetEntryId);
+                          }}
+                          variant="danger"
+                          type="button"
+                          as="button"
+                        >
+                          Delete
+                        </Button>
+                      </ButtonGroup>
                     </td>
                   </tr>
                 );
               })}
             </tbody>
-          </table>
-        </div>
+          </Table>
+        </Container>
       </main>
     </>
   );

@@ -4,7 +4,7 @@ import { vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import Dashboard from "../components/Dashboard";
 import Spendings from "../components/Spendings";
-import Wishlist from "../components/Wishlist";
+import Wishlist from "../components/WishlistTracker/Wishlist";
 import { WishlistContext } from "../App";
 
 describe("Wishlist Component", () => {
@@ -209,8 +209,8 @@ describe("Wishlist Component", () => {
       </WishlistContext.Provider>
     );
 
-    const itemInput = screen.getByRole("textbox", { name: "Item" });
-    const priceInput = screen.getAllByRole("spinbutton", { name: "$" })[0];
+    const itemInput = screen.getAllByRole("textbox", { name: "" })[0];
+    const priceInput = screen.getAllByRole("spinbutton", { name: "" })[0];
     const addBtn = screen.getAllByRole("button", { name: "Add" })[0];
 
     await user.type(itemInput, "Cup");
@@ -251,7 +251,7 @@ describe("Wishlist Component", () => {
     );
 
     const startBalanceInput = screen.getAllByRole("spinbutton", {
-      name: "$",
+      name: "",
     })[1];
     const saveBtn = screen.getByRole("button", { name: "Save" });
 
@@ -291,8 +291,8 @@ describe("Wishlist Component", () => {
       </WishlistContext.Provider>
     );
 
-    const categoryInput = screen.getByRole("textbox", { name: "Category" });
-    const balanceInput = screen.getAllByRole("spinbutton", { name: "$" })[2];
+    const categoryInput = screen.getAllByRole("textbox", { name: "" })[2];
+    const balanceInput = screen.getAllByRole("spinbutton", { name: "" })[2];
     const addBtn = screen.getAllByRole("button", { name: "Add" })[1];
 
     await user.type(categoryInput, "Insurance");

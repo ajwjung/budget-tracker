@@ -1,0 +1,8 @@
+.doughnutContainer {
+    position: relative;
+    height: 35vh;
+    width: 80vw;
+
+    display: flex;
+    justify-content: center;
+}

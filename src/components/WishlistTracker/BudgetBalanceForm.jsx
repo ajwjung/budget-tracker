@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
-import { WishlistContext } from "../App";
+import { WishlistContext } from "../../App";
+import { Button, Form, InputGroup } from "react-bootstrap";
 
 function BudgetBalanceForm() {
   const { handleUpdateStartBalance } = useContext(WishlistContext);
@@ -10,7 +11,7 @@ function BudgetBalanceForm() {
   }
 
   return (
-    <form
+    <Form
       onSubmit={(e) => {
         e.preventDefault();
         handleUpdateStartBalance(startBalance);
@@ -19,28 +20,24 @@ function BudgetBalanceForm() {
       id="budget-balance-form"
     >
       <h3 className="fs-4">Enter your starting balance:</h3>
-      <div className="input-group">
-        <label htmlFor="current-balance" className="input-group-text">
-          $
-        </label>
-        <input
+      <InputGroup>
+        <InputGroup.Text id="current-balance">$</InputGroup.Text>
+        <Form.Control
           type="number"
           min="0.01"
           step="0.01"
           name="currentBalance"
-          id="current-balance"
-          className="form-control"
           value={startBalance}
           onChange={(e) => {
             handleStartBalanceChange(e);
           }}
           required={true}
         />
-        <button type="submit" className="btn btn-outline-primary">
+        <Button type="submit" variant="outline-primary">
           Save
-        </button>
-      </div>
-    </form>
+        </Button>
+      </InputGroup>
+    </Form>
   );
 }
 

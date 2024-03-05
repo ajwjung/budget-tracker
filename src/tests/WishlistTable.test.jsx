@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import WishlistTable from "../components/WishlistTable";
+import WishlistTable from "../components/WishlistTracker/WishlistTable";
 import { WishlistContext } from "../App";
 
 describe("WishlistTable component", () => {

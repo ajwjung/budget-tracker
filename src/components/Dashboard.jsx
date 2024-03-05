@@ -10,7 +10,9 @@ import {
   Legend,
   Tooltip,
 } from "chart.js";
+import { Container, Row, Col, Card, Table, ListGroup } from "react-bootstrap";
 import Header from "./Header";
+import styles from "./Dashboard.module.css";
 
 ChartJS.register(DoughnutController, ArcElement, Legend, Tooltip);
 
@@ -116,6 +118,9 @@ function Dashboard() {
   };
 
   const options = {
+    responsive: true,
+    maintainAspectRatio: true,
+    // maintainAspectRatio: false,
     plugins: {
       legend: {
         display: true,
@@ -137,7 +142,7 @@ function Dashboard() {
 
         const xCoor = chart.getDatasetMeta(0).data[0].x;
         const yCoor = chart.getDatasetMeta(0).data[0].y;
-        ctx.font = "1.5rem sans-serif";
+        ctx.font = "1.2rem sans-serif";
         ctx.fillStyle = "steelblue";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
@@ -149,73 +154,78 @@ function Dashboard() {
   return (
     <>
       <Header />
-      <h1>Welcome, User!</h1>
       <main>
-        <h2 className="text-center">User's Dashboard</h2>
-        <div className="container-sm my-5">
-          <div className="row gx-5">
-            <div className="col-7">
+        <Container>
+          <Row className="my-3">
+            <h1>Welcome, User!</h1>
+          </Row>
+          <Row className="my-3">
+            <h2 className="text-center">User's Dashboard</h2>
+          </Row>
+          <Row>
+            <Col className={styles.doughnutContainer}>
               <Doughnut
                 data={data}
                 options={options}
                 plugins={plugins}
               ></Doughnut>
-            </div>
-            <div className="col">
-              <div className="card">
-                <div className="card-body">
-                  <h3>Overview</h3>
+            </Col>
+            <Col className="my-2">
+              <Card>
+                <Card.Body>
+                  <Card.Title>Overview</Card.Title>
                   <hr />
-                  <ul className="list-group list-group-flush">
-                    <li className="list-group-item">
+                  <ListGroup variant="flush">
+                    <ListGroup.Item>
                       Total Spent: {formatAmount(spentAmount)}
-                    </li>
-                    <li className="list-group-item">
+                    </ListGroup.Item>
+                    <ListGroup.Item>
                       Remaining Balance: {formatAmount(remainingBalance)}
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="row my-5">
-            <div className="card">
-              <div className="card-body">
-                <h3>Recent Transactions</h3>
-                <hr />
-                <table className="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Type</th>
-                      <th>Description</th>
-                      <th>Amount ($)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tenMostRecentTransactions.map((transaction) => {
-                      return (
-                        <tr key={transaction.id}>
-                          <td>{transaction.date}</td>
-                          <td>{transaction.transactionCategory}</td>
-                          <td>{transaction.description}</td>
-                          <td>{transaction.amount}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-
-                <Link
-                  to="/transactions"
-                  className="d-flex justify-content-center"
-                >
-                  View All Transactions
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
+                    </ListGroup.Item>
+                  </ListGroup>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+          <Row className="my-3">
+            <Col>
+              <Card>
+                <Card.Body>
+                  <Card.Title>Recent Transactions</Card.Title>
+                  <hr />
+                  <Table striped responsive size="md">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Amount ($)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tenMostRecentTransactions.map((transaction) => {
+                        return (
+                          <tr key={transaction.id}>
+                            <td>{transaction.date}</td>
+                            <td>{transaction.transactionCategory}</td>
+                            <td>{transaction.description}</td>
+                            <td>{transaction.amount}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </Table>
+                  <Link
+                    to="/transactions"
+                    className="d-flex justify-content-center"
+                  >
+                    View All Transactions
+                  </Link>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
       </main>
     </>
   );

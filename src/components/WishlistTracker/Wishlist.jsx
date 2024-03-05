@@ -1,10 +1,11 @@
 import { useContext } from "react";
-import { WishlistContext } from "../App";
-import Header from "./Header";
+import { WishlistContext } from "../../App";
+import Header from "../Header";
 import WishlistTable from "./WishlistTable";
 import BudgetTable from "./BudgetTable";
 import WishlistForm from "./WishlistForm";
 import BudgetBalanceForm from "./BudgetBalanceForm";
+import { Container } from "react-bootstrap";
 
 function Wishlist() {
   const { wishlistItems, categories, idsOfSelectedItems, startingBalance } =
@@ -59,15 +60,15 @@ function Wishlist() {
     <>
       <Header />
       <main>
-        <div className="container my-5">
+        <Container className="my-5">
           <h2>Wishlist Tracker</h2>
           <WishlistTable
             calculateTotal={calculateTotal}
             calculateSelectedTotal={calculateSelectedTotal}
           />
           <WishlistForm headerText="wishlist item" />
-        </div>
-        <div className="container my-5">
+        </Container>
+        <Container className="my-5">
           <h2>Outstanding Balances</h2>
           <BudgetTable
             calculateTotal={calculateTotal}
@@ -79,7 +80,7 @@ function Wishlist() {
           </p>
           <BudgetBalanceForm />
           <WishlistForm headerText="category" />
-        </div>
+        </Container>
       </main>
     </>
   );
