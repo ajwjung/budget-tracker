@@ -74,7 +74,7 @@ function Wishlist() {
             calculateTotal={calculateTotal}
             calculateSelectedTotal={calculateSelectedTotal}
           />
-          <p>
+          <p className="mb-4">
             * Current Balance and Wishlist Expenses categories are default
             categories
           </p>

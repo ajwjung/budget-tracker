@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useContext, useState } from "react";
 import { WishlistContext } from "../../App";
-import { Button, Form, InputGroup } from "react-bootstrap";
+import { Accordion, Col, Row, Button, Form, InputGroup } from "react-bootstrap";
 
 function WishlistForm({ headerText }) {
   const { handleAddNewItem, handleAddNewCategory } =
@@ -28,7 +28,7 @@ function WishlistForm({ headerText }) {
     formDetails["priceInputName"] = "price";
     formDetails["priceInputId"] = "price";
     formDetails["linkLabelFor"] = "item-link";
-    formDetails["linkLabelText"] = "Link to Item";
+    formDetails["linkLabelText"] = "Link to Product (URL)";
     formDetails["linkInputName"] = "itemLink";
     formDetails["linkInputId"] = "item-link";
   } else if (headerText === "category") {
@@ -93,79 +93,106 @@ function WishlistForm({ headerText }) {
   }
 
   return (
-    <Form
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleOnSubmit();
-      }}
-      className="my-2"
-      id={formDetails.formId}
-    >
-      <h3 className="fs-4">Add a new {headerText}:</h3>
-      <InputGroup className="mb-3">
-        <InputGroup.Text id={formDetails.itemLabelFor}>
-          {formDetails.itemLabelText}
-        </InputGroup.Text>
-        <Form.Control
-          type="text"
-          name={formDetails.itemInputName}
-          aria-describedby={formDetails.itemInputId}
-          value={
-            headerText === "wishlist item"
-              ? itemInfo.item
-              : categoryInfo.category
-          }
-          onChange={(e) => {
-            headerText === "wishlist item"
-              ? handleItemNameChange(e)
-              : handleCategoryChange(e);
-          }}
-          required={true}
-        />
-        <InputGroup.Text id={formDetails.priceLabelFor}>$</InputGroup.Text>
-        <Form.Control
-          type="number"
-          min="0.01"
-          step="0.01"
-          name={formDetails.priceInputName}
-          aria-describedby={formDetails.priceInputId}
-          value={
-            headerText === "wishlist item"
-              ? itemInfo.price
-              : categoryInfo.balance
-          }
-          onChange={(e) => {
-            headerText === "wishlist item"
-              ? handleItemPriceChange(e)
-              : handleBalanceChange(e);
-          }}
-          required={true}
-        />
-        {/* Only create "Link to Item" input field for wishlist form */}
-        {headerText === "wishlist item" && (
-          <>
-            <InputGroup.Text
-              id={formDetails.linkLabelFor}
-              className="input-group-text"
-            >
-              {formDetails.linkLabelText}
-            </InputGroup.Text>
-            <Form.Control
-              type="url"
-              name={formDetails.linkInputName}
-              aria-describedby={formDetails.linkInputId}
-              value={itemInfo.link}
-              onChange={(e) => {
-                handleItemLinkChange(e);
-              }}
-            />
-          </>
-        )}
-        <Button type="submit" variant="outline-primary">
-          Add
-        </Button>
-      </InputGroup>
-    </Form>
+    <Accordion className="my-3">
+      <Accordion.Item>
+        <Accordion.Header as="h3">Add a new {headerText}:</Accordion.Header>
+        <Accordion.Body>
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleOnSubmit();
+            }}
+            id={formDetails.formId}
+          >
+            <Row>
+              <Col>
+                <Form.Label htmlFor={formDetails.itemLabelFor}>
+                  {formDetails.itemLabelText}
+                </Form.Label>
+                <InputGroup className="mb-3">
+                  <Form.Control
+                    type="text"
+                    name={formDetails.itemInputName}
+                    id={formDetails.itemInputId}
+                    value={
+                      headerText === "wishlist item"
+                        ? itemInfo.item
+                        : categoryInfo.category
+                    }
+                    onChange={(e) => {
+                      headerText === "wishlist item"
+                        ? handleItemNameChange(e)
+                        : handleCategoryChange(e);
+                    }}
+                    required={true}
+                  />
+                </InputGroup>
+              </Col>
+              <Col>
+                <Form.Label htmlFor={formDetails.priceLabelFor}>
+                  Price
+                </Form.Label>
+                <InputGroup>
+                  <InputGroup.Text>$</InputGroup.Text>
+                  <Form.Control
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    name={formDetails.priceInputName}
+                    id={formDetails.priceInputId}
+                    value={
+                      headerText === "wishlist item"
+                        ? itemInfo.price
+                        : categoryInfo.balance
+                    }
+                    onChange={(e) => {
+                      headerText === "wishlist item"
+                        ? handleItemPriceChange(e)
+                        : handleBalanceChange(e);
+                    }}
+                    required={true}
+                  />
+                </InputGroup>
+              </Col>
+            </Row>
+            {headerText === "category" && (
+              <Button type="submit" variant="outline-primary">
+                Add Category
+              </Button>
+            )}
+            {/* Only create "Link to Item" input field for wishlist form */}
+            {headerText === "wishlist item" && (
+              <>
+                <Row>
+                  <Form.Label htmlFor={formDetails.linkLabelFor}>
+                    {formDetails.linkLabelText}
+                  </Form.Label>
+                  <InputGroup className="mb-3">
+                    <InputGroup.Text>https://</InputGroup.Text>
+                    <Form.Control
+                      type="text"
+                      name={formDetails.linkInputName}
+                      id={formDetails.linkInputId}
+                      value={itemInfo.link}
+                      onChange={(e) => {
+                        handleItemLinkChange(e);
+                      }}
+                    />
+                  </InputGroup>
+                </Row>
+                <Row>
+                  <InputGroup>
+                    <Button type="submit" variant="outline-primary">
+                      Add Item
+                    </Button>
+                  </InputGroup>
+                </Row>
+              </>
+            )}
+          </Form>
+        </Accordion.Body>
+      </Accordion.Item>
+    </Accordion>
   );
 }
 

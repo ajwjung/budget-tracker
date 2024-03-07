@@ -359,7 +359,7 @@ function Spendings() {
               Enter a Deposit
             </ToggleButton>
           </ToggleButtonGroup>
-          <Collapse in={expenseFormOpen}>
+          <Collapse in={expenseFormOpen} className="my-3">
             <Container id="expenses">
               <h2>Enter an Expense:</h2>
               <Form
@@ -450,7 +450,7 @@ function Spendings() {
               </Form>
             </Container>
           </Collapse>
-          <Collapse in={depositFormOpen}>
+          <Collapse in={depositFormOpen} className="my-3">
             <Container id="deposits">
               <h2>Enter a Deposit:</h2>
               <Form

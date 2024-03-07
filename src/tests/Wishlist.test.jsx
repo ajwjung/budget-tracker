@@ -1,6 +1,6 @@
 import { RouterProvider, createMemoryRouter } from "react-router-dom";
-import { render, screen } from "@testing-library/react";
-import { vi } from "vitest";
+import { render, screen, waitFor } from "@testing-library/react";
+import { expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import Dashboard from "../components/Dashboard";
 import Spendings from "../components/Spendings";
@@ -209,15 +209,21 @@ describe("Wishlist Component", () => {
       </WishlistContext.Provider>
     );
 
-    const itemInput = screen.getAllByRole("textbox", { name: "" })[0];
-    const priceInput = screen.getAllByRole("spinbutton", { name: "" })[0];
-    const addBtn = screen.getAllByRole("button", { name: "Add" })[0];
+    const itemInput = screen.getByRole("textbox", { name: "Item" });
+    const priceInput = screen.getAllByRole("spinbutton", { name: "Price" })[0];
+    const linkInput = screen.getByRole("textbox", {
+      name: "Link to Product (URL)",
+    });
+    const addBtn = screen.getByRole("button", { name: "Add Item" });
 
     await user.type(itemInput, "Cup");
     await user.type(priceInput, "29.99");
+    await user.type(linkInput, "https://www.google.com/");
     await user.click(addBtn);
 
-    expect(handleAddNewItem).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(handleAddNewItem).toHaveBeenCalledOnce();
+    });
   });
 
   it("calls the `handleUpdateStartBalance` function when `Save` button is clicked", async () => {
@@ -250,15 +256,17 @@ describe("Wishlist Component", () => {
       </WishlistContext.Provider>
     );
 
-    const startBalanceInput = screen.getAllByRole("spinbutton", {
-      name: "",
-    })[1];
+    const startBalanceInput = screen.getByRole("spinbutton", {
+      name: "Starting Balance",
+    });
     const saveBtn = screen.getByRole("button", { name: "Save" });
 
-    await user.type(startBalanceInput, "29.99");
+    await user.type(startBalanceInput, "129.99");
     await user.click(saveBtn);
 
-    expect(handleUpdateStartBalance).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(handleUpdateStartBalance).toHaveBeenCalledOnce();
+    });
   });
 
   it("calls the `handleAddNewCategory` function when `Add` button is clicked", async () => {
@@ -291,14 +299,18 @@ describe("Wishlist Component", () => {
       </WishlistContext.Provider>
     );
 
-    const categoryInput = screen.getAllByRole("textbox", { name: "" })[2];
-    const balanceInput = screen.getAllByRole("spinbutton", { name: "" })[2];
-    const addBtn = screen.getAllByRole("button", { name: "Add" })[1];
+    const categoryInput = screen.getByRole("textbox", { name: "Category" });
+    const balanceInput = screen.getAllByRole("spinbutton", {
+      name: "Price",
+    })[1];
+    const addBtn = screen.getByRole("button", { name: "Add Category" });
 
     await user.type(categoryInput, "Insurance");
     await user.type(balanceInput, "329.99");
     await user.click(addBtn);
 
-    expect(handleAddNewCategory).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(handleAddNewCategory).toHaveBeenCalledOnce();
+    });
   });
 });
