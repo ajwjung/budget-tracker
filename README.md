@@ -1,6 +1,6 @@
 # Budget Tracker
 
-- Live Demo
+- [Live Demo](https://main--wishlist-budget-tracker.netlify.app/)
 
 ## Built With
 
@@ -10,9 +10,9 @@
 - [React Testing Library](https://testing-library.com/)
 - [React-Bootstrap](https://react-bootstrap.netlify.app/)
 
-## Finance App Features
+## Budget Tracker Features
 
-This is a simple finance app used for tracking income and expenses and for visualizing spendings on a basic level. The app also features a wishlist tracker and budget table to determine costs per category. All data is stored using local storage so the user can return to their budget again the next time they open the website.
+This is a simple budget tracker used for tracking income and expenses and for visualizing spendings on a basic level. The app also features a wishlist tracker and budget table to determine costs per category. All data is stored using local storage so the user can return to their budget again the next time they open the website.
 
 ### Transactions Tab
 
