@@ -133,11 +133,17 @@ function App() {
     ) {
       const updatedItems = wishlistItems.map((item) => {
         if (item.id === 0) {
+          const url =
+            itemInfo.link.startsWith("https://") ||
+            itemInfo.link.startsWith("http://")
+              ? itemInfo.link
+              : `https://${itemInfo.link}`;
+
           return {
             id: item.id,
             item: itemInfo.item,
             price: parseFloat(itemInfo.price),
-            link: itemInfo.link,
+            link: url,
           };
         } else {
           return item;
@@ -147,6 +153,12 @@ function App() {
       setWishlistItems(updatedItems);
     } else {
       // Otherwise, add a new object
+      const url =
+        itemInfo.link.startsWith("https://") ||
+        itemInfo.link.startsWith("http://")
+          ? itemInfo.link
+          : `https://${itemInfo.link}`;
+
       setWishlistItems([
         ...wishlistItems,
         {
@@ -155,7 +167,7 @@ function App() {
             : wishlistItems.length + 1,
           item: itemInfo.item,
           price: parseFloat(itemInfo.price),
-          link: itemInfo.link,
+          link: url,
         },
       ]);
     }

@@ -145,8 +145,14 @@ function WishlistTable({ calculateTotal, calculateSelectedTotal }) {
         itemLinkCell.removeChild(itemLinkCell.firstChild);
         itemLinkCell.appendChild(itemLinkAnchor);
       } else {
+        const itemLinkAnchor = document.createElement("a");
+        itemLinkAnchor.setAttribute("href", `https://${itemLinkValue}`);
+        itemLinkAnchor.setAttribute("target", "_blank");
+        itemLinkAnchor.setAttribute("title", "Link opens in a new tab");
+        itemLinkAnchor.textContent = `https://${itemLinkValue}`;
+
         itemLinkCell.removeChild(itemLinkCell.firstChild);
-        itemLinkCell.textContent = itemLinkValue;
+        itemLinkCell.textContent = `https://${itemLinkValue}`;
       }
 
       setIsEdit((prevState) => ({
